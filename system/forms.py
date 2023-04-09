@@ -458,6 +458,9 @@ class MultipleAddCreds(FlaskForm):
     comment = StringField('comment',
                           validators=[],
                           default='')
+    host = StringField('host',
+                       validators=[],
+                       default='')
     info_source = StringField('info_source',
                               validators=[],
                               default='')
@@ -487,6 +490,11 @@ class MultipleAddCreds(FlaskForm):
                                   NumberRange(min=0, max=100,
                                               message="Info source must be in 1..100 (0 if ignore)!"), ],
                               default=0)
+    host_num = IntegerField('host_num',
+                            validators=[
+                                NumberRange(min=0, max=100,
+                                            message="IP must be in 1..100 (0 if ignore)!"), ],
+                            default=0)
     delimiter = StringField('delimiter',
                             validators=[],
                             default=';')
@@ -1386,6 +1394,7 @@ class EditTask(FlaskForm):
     teams = StringField('teams', default="[]")
     users = StringField('users', default="[]")
     hosts = StringField('hosts', default="[]")
+
 
 class aiodnsbruteForm(FlaskForm):
     csv_files = MultipleFileField('csv_files')

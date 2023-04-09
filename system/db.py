@@ -1578,8 +1578,7 @@ class Database:
         return
 
     def update_creds(self, creds_id, login, password_hash, hash_type,
-                     cleartext_passwd, description, source,
-                     services):
+                     cleartext_passwd, description, source, services):
         self.execute(
             '''UPDATE Credentials SET login=?,hash=?,hash_type=?,cleartext=?,
             description=?,source=?,services=? WHERE id=?''',
