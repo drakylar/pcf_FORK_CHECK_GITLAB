@@ -988,9 +988,9 @@ class NewIssueTemplate(FlaskForm):
 class NewIssueRule(FlaskForm):
     name = StringField('name', default='')
     team_id = StringField('team_id', default='')
-    # [ {'field_name': '...', 'rule_type': 'substring/regexp', 'value': '...'}, ...]
+    # [ {'field_name': '...', 'rule_type': 'substring/regexp', 'val': '...'}, ...]
     search_rule_json = StringField('search_rule_json', default='[]')
-    # [ {'field_name': '...', 'var_name': 'urlpath', 'extract_type': 'substring/regexp', 'value': '...'}, ...]
+    # [ {'field_name': '...', 'var_name': 'urlpath', 'extract_type': 'substring/regexp', 'val': '...'}, ...]
     extract_rule_json = StringField('extract_rule_json', default='[]')
     # [ {'id': '...', 'vars': {'service-name': "test"}}, {'type': 'substring/regexp', 'field_name': 'urlpath', 'search_filter': '...', 'replace_string': '...'}]
     replace_rule_json = StringField('replace_rule_json', default='[]')
@@ -999,9 +999,9 @@ class NewIssueRule(FlaskForm):
 class UpdateIssueRule(FlaskForm):
     name = StringField('name', default='')
     team_id = StringField('team_id', default='')
-    # [ {'field_name': '...', 'rule_type': 'substring/regexp', 'value': '...'}, ...]
+    # [ {'field_name': '...', 'rule_type': 'substring/regexp', 'val': '...'}, ...]
     search_rule_json = StringField('search_rule_json', default='[]')
-    # [ {'field_name': '...', 'var_name': 'urlpath', 'extract_type': 'substring/regexp', 'value': '...'}, ...]
+    # [ {'field_name': '...', 'var_name': 'urlpath', 'extract_type': 'substring/regexp', 'val': '...'}, ...]
     extract_rule_json = StringField('extract_rule_json', default='[]')
     # [ {'id': '...', 'vars': {'service-name': "test"}}, {'type': 'substring/regexp', 'field_name': 'urlpath', 'search_filter': '...', 'replace_string': '...'}]
     replace_rule_json = StringField('replace_rule_json', default='[]')

@@ -571,7 +571,7 @@ def new_issue_form(project_id, current_project, current_user):
                         elif field_type == "boolean":
                             type_func = lambda x: bool(int(x))
                         add_fields_dict[field_name] = {
-                            'value': type_func(field_value),
+                            'val': type_func(field_value),
                             'type': field_type
                         }
                     except:
@@ -597,7 +597,7 @@ def new_issue_form(project_id, current_project, current_user):
                     file_move_list.append([tmp_file_path, file_path, field_id, filename])
                     add_fields_dict[file_field_name] = {}
                     add_fields_dict[file_field_name]['type'] = 'file'
-                    add_fields_dict[file_field_name]['value'] = field_id
+                    add_fields_dict[file_field_name]['val'] = field_id
                 file_counter += 1
 
     if not errors:
@@ -802,7 +802,7 @@ def edit_issue_with_template_form(project_id, issue_id, template_id, current_pro
                         type_func = lambda x: bool(int(x))
 
                     add_variables_dict[variable_name] = {
-                        'value': type_func(variable_value) if variable_type == 'text' or variable_value else type_func(0),
+                        'val': type_func(variable_value) if variable_type == 'text' or variable_value else type_func(0),
                         'type': variable_type
                     }
                 except:
@@ -812,7 +812,7 @@ def edit_issue_with_template_form(project_id, issue_id, template_id, current_pro
         def replace_tpl_text(text: str):
             for variable_name in add_variables_dict:
                 variable_type = add_variables_dict[variable_name]['type']
-                variable_value = add_variables_dict[variable_name]['value']
+                variable_value = add_variables_dict[variable_name]['val']
                 if variable_type == 'boolean':
                     variable_value = int(variable_value)
                 text = text.replace('__' + variable_name + '__', str(variable_value))
@@ -838,7 +838,7 @@ def edit_issue_with_template_form(project_id, issue_id, template_id, current_pro
 
         for field_name in issue_fields:
             if issue_fields[field_name]['type'] == 'text':
-                issue_fields[field_name]['value'] = replace_tpl_text(issue_fields[field_name]['value'])
+                issue_fields[field_name]['val'] = replace_tpl_text(issue_fields[field_name]['val'])
 
         for old_field_name in old_issue_fields:
             if old_field_name not in issue_fields:
@@ -1059,11 +1059,11 @@ def issues_edit_fields(project_id, issue_id, current_project, current_user,
         # check old text fields
         for field_name in old_field_dict:
             field_type = old_field_dict[field_name]['type']
-            field_value = old_field_dict[field_name]['value']
+            field_value = old_field_dict[field_name]['val']
             if field_type == 'file':
                 add_fields_dict[field_name] = {
                     'type': field_type,
-                    'value': field_value
+                    'val': field_value
                 }
 
         if len(form.additional_field_name.data) == \
@@ -1084,7 +1084,7 @@ def issues_edit_fields(project_id, issue_id, current_project, current_user,
                         elif field_type == "boolean":
                             type_func = lambda x: bool(int(x))
                         add_fields_dict[field_name] = {
-                            'value': type_func(field_value),
+                            'val': type_func(field_value),
                             'type': field_type
                         }
                     except:
@@ -1125,11 +1125,11 @@ def issues_edit_file_fields(project_id, issue_id, current_project, current_user,
         # check old text fields
         for field_name in old_field_dict:
             field_type = old_field_dict[field_name]['type']
-            field_value = old_field_dict[field_name]['value']
+            field_value = old_field_dict[field_name]['val']
             if field_type != 'file' or field_name in old_files_list:
                 add_fields_dict[field_name] = {
                     'type': field_type,
-                    'value': field_value
+                    'val': field_value
                 }
             elif field_type == 'file':
                 if field_name not in old_files_list:
@@ -1159,7 +1159,7 @@ def issues_edit_file_fields(project_id, issue_id, current_project, current_user,
                     shutil.move(tmp_file_path, file_path)
                     add_fields_dict[field_name] = {}
                     add_fields_dict[field_name]['type'] = 'file'
-                    add_fields_dict[field_name]['value'] = field_id
+                    add_fields_dict[field_name]['val'] = field_id
 
                     file_data = b''
                     if config["files"]["poc_storage"] == 'database':
@@ -3611,7 +3611,7 @@ def project_create_issue_from_template_form(project_id, current_project, current
                     elif variable_type == "boolean":
                         type_func = lambda x: bool(int(x))
                     add_variables_dict[variable_name] = {
-                        'value': type_func(variable_value) if variable_type == 'text' or variable_value else type_func(0),
+                        'val': type_func(variable_value) if variable_type == 'text' or variable_value else type_func(0),
                         'type': variable_type
                     }
                 except:
@@ -3621,7 +3621,7 @@ def project_create_issue_from_template_form(project_id, current_project, current
         def replace_tpl_text(text: str):
             for variable_name in add_variables_dict:
                 variable_type = add_variables_dict[variable_name]['type']
-                variable_value = add_variables_dict[variable_name]['value']
+                variable_value = add_variables_dict[variable_name]['val']
                 if variable_type == 'boolean':
                     variable_value = int(variable_value)
                 text = text.replace('__' + variable_name + '__', str(variable_value))
@@ -3647,7 +3647,7 @@ def project_create_issue_from_template_form(project_id, current_project, current
 
         for field_name in issue_fields:
             if issue_fields[field_name]['type'] == 'text':
-                issue_fields[field_name]['value'] = replace_tpl_text(issue_fields[field_name]['value'])
+                issue_fields[field_name]['val'] = replace_tpl_text(issue_fields[field_name]['val'])
 
         issue_id = db.insert_new_issue(issue_name, issue_description,
                                        issue_url_path, issue_cvss,
@@ -3973,12 +3973,12 @@ def project_issue_rules_form(project_id, current_project, current_user):
         # fix search rules
         for search_rule in current_rule['search_rules']:
             if search_rule['type'] == 'substring':
-                search_rule['value'] = sql_to_regexp(search_rule['value'])
+                search_rule['val'] = sql_to_regexp(search_rule['val'])
 
         # fix extract_vars
         for extract_rule in current_rule['extract_vars']:
             if extract_rule['type'] == 'substring':
-                extract_rule['value'] = extract_to_regexp(extract_rule['value'])
+                extract_rule['val'] = extract_to_regexp(extract_rule['val'])
 
         # fix replace_rules
         for replace_rule in current_rule['replace_rules']:
@@ -4042,9 +4042,9 @@ def project_issue_rules_form(project_id, current_project, current_user):
                     new_name = field_name.strip('_\t\n\r')
                     for issue_field_name in current_issue['fields']:
                         if issue_field_name == new_name and current_issue['fields'][issue_field_name]['type'] != 'file':
-                            compare_str = str(current_issue['fields'][issue_field_name]['value'])
+                            compare_str = str(current_issue['fields'][issue_field_name]['val'])
                 # check
-                reg_exp = search_rule['value']
+                reg_exp = search_rule['val']
                 try:
                     found = bool(run_function_timeout(
                         re.match, int(config["timeouts"]["regexp_timeout"]),
@@ -4110,10 +4110,10 @@ def project_issue_rules_form(project_id, current_project, current_user):
                     try:
                         search_result = run_function_timeout(
                             re.search, int(config["timeouts"]["regexp_timeout"]),
-                            pattern=extract_rule['value'],
+                            pattern=extract_rule['val'],
                             string=compare_str
                         )
-                        # search_result = re.search(extract_rule['value'], compare_str)
+                        # search_result = re.search(extract_rule['val'], compare_str)
                         variable_value = str(search_result.group(1))
                     except Exception as e:
                         pass
@@ -4225,13 +4225,13 @@ def project_issue_rules_form(project_id, current_project, current_user):
                             if field_name in replace_rule['vars']:
                                 try:
                                     if current_template['variables'][field_name]["type"] == "boolean":
-                                        current_template['variables'][field_name]["value"] = bool(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = bool(replace_rule['vars'][field_name])
                                     elif current_template['variables'][field_name]["type"] == "number":
-                                        current_template['variables'][field_name]["value"] = int(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = int(replace_rule['vars'][field_name])
                                     elif current_template['variables'][field_name]["type"] == "float":
-                                        current_template['variables'][field_name]["value"] = float(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = float(replace_rule['vars'][field_name])
                                     elif current_template['variables'][field_name]["type"] == "text":
-                                        current_template['variables'][field_name]["value"] = str(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = str(replace_rule['vars'][field_name])
                                 except Exception as e:
                                     pass
                         add_variables_dict = current_template['variables']
@@ -4239,7 +4239,7 @@ def project_issue_rules_form(project_id, current_project, current_user):
                         def replace_tpl_text(text: str):
                             for variable_name in add_variables_dict:
                                 variable_type = add_variables_dict[variable_name]['type']
-                                variable_value = add_variables_dict[variable_name]['value']
+                                variable_value = add_variables_dict[variable_name]['val']
                                 if variable_type == 'boolean':
                                     variable_value = int(variable_value)
                                 text = text.replace('__' + variable_name + '__', str(variable_value))
@@ -4264,7 +4264,7 @@ def project_issue_rules_form(project_id, current_project, current_user):
 
                         for field_name in issue_fields:
                             if issue_fields[field_name]['type'] == 'text':
-                                issue_fields[field_name]['value'] = replace_tpl_text(issue_fields[field_name]['value'])
+                                issue_fields[field_name]['val'] = replace_tpl_text(issue_fields[field_name]['val'])
 
                         current_issue = {
                             'id': current_issue['id'],
