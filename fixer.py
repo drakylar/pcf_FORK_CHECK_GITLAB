@@ -10,9 +10,9 @@ print("!!! Important !!! Better to turn off your PCF instance while fixing (or j
 
 print("It will also create a database backup (only for SQLite3)!")
 
-s = input("If you are ready for some fix scripts, write FIX_ME:")
+s = input("If you are ready for some fix scripts, write I_WILL_READ_THE_OUTPUT:")
 
-if s not in ("FIX_ME", "FIX_ME:"):
+if s not in ("I_WILL_READ_THE_OUTPUT", "I_WILL_READ_THE_OUTPUT:"):
     print("Wrong string :( Retry again!")
     exit()
 
