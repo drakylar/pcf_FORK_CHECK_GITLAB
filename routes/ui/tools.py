@@ -4224,7 +4224,7 @@ def wpscan_page_form(project_id, current_project, current_user):
                     elif host_field:
                         current_ip = host_field
                     elif form.auto_resolve.data:
-                        current_ip = socket.gethostbyname(hostname.decode('charmap'))
+                        current_ip = socket.gethostbyname(hostname)
                     else:
                         errors.append("IP not found!")
                     current_host = db.select_project_host_by_ip(current_project['id'], current_ip)
