@@ -1,3 +1,5 @@
+import logging
+
 from routes.ui import routes
 from app import check_session, db, redirect, render_template, request, \
     send_log_data, requires_authorization, csrf, config
@@ -94,7 +96,8 @@ def nmap_page_form(project_id, current_project, current_user):
             try:
                 xml_report_data = file.read().decode('charmap')
                 nmap_report = NmapParser.parse_fromstring(xml_report_data)
-            except:
+            except Exception as e:
+                logging.error("Wrong nmap XML file:", e)
                 return render_template('project/tools/import/nmap.html',
                                        current_project=current_project,
                                        errors=['Оne of uploaded files was incorrect!'],
