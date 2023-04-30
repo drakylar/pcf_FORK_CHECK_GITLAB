@@ -239,7 +239,7 @@ def nmap_page_form(project_id, current_project, current_user):
                                         if 'credentials' in script_obj.script_types:
                                             credentials = script_obj.credentials()
                                             for cred in credentials:
-                                                login = cred['login'] if 'login' in cred else ''
+                                                login = cred['login'] if 'login' in cred else '_BLANC'
                                                 cleartext = cred['cleartext'] if 'cleartext' in cred else ''
                                                 hash_str = cred['hash'] if 'hash' in cred else ''
                                                 description = cred['description'] if 'description' in cred else ''
