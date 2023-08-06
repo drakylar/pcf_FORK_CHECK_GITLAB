@@ -5354,7 +5354,7 @@ def theharvester_page_form(project_id, current_project, current_user):
                     if ips_str == '':
                         continue
 
-                    ip_array = ips_str.replace(' ','').split('')
+                    ip_array = ips_str.replace(' ', '').split(',')
                     for ip_address in ip_array:
                         # check valid ip
                         ipaddress.ip_address(ip_address)
