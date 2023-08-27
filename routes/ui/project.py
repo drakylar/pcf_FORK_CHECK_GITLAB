@@ -3194,8 +3194,13 @@ def generate_report(project_id, current_project, current_user):
                         tmp_image_path = path.join(config['main']['tmp_path'],
                                                    tmp_image_id + '.png')
                         template_images.append(tmp_image_path)
-                        original_image_path = path.join('./static/files/poc/', poc_id)
-                        shutil.copyfile(original_image_path, tmp_image_path)
+                        if config['files']['poc_storage'] == 'filesystem':
+                            original_image_path = path.join('./static/files/poc/', poc_id)
+                            shutil.copyfile(original_image_path, tmp_image_path)
+                        elif config['files']['poc_storage'] == 'database':
+                            with open(tmp_image_path, 'wb') as f:
+                                f.write(base64.b64decode(project_dict['pocs'][poc_id]['base64']))
+                                f.close()
                         project_dict['pocs'][poc_id]['content_image'] = InlineImage(template_obj, tmp_image_path)
                 try:
                     run_function_timeout(
@@ -3346,8 +3351,14 @@ def generate_report(project_id, current_project, current_user):
                                                     tmp_image_path = path.join(config['main']['tmp_path'],
                                                                                tmp_image_id + '.png')
                                                     template_images.append(tmp_image_path)
-                                                    original_image_path = path.join('./static/files/poc/', poc_id)
-                                                    shutil.copyfile(original_image_path, tmp_image_path)
+                                                    if config['files']['poc_storage'] == 'filesystem':
+                                                        original_image_path = path.join('./static/files/poc/', poc_id)
+                                                        shutil.copyfile(original_image_path, tmp_image_path)
+                                                    elif config['files']['poc_storage'] == 'database':
+                                                        with open(tmp_image_path, 'wb') as f:
+                                                            f.write(base64.b64decode(project_dict['pocs'][poc_id]['base64']))
+                                                            f.close()
+
                                                     project_dict['pocs'][poc_id]['content_image'] = InlineImage(
                                                         template_obj, tmp_image_path)
                                             run_function_timeout(
