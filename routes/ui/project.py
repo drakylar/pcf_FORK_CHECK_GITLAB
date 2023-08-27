@@ -3830,7 +3830,11 @@ def project_hosts_multiple_form(project_id, current_project, current_user):
         form.description_num.data,
         form.os_num.data,
         form.online_num.data,
-        form.scope_num.data
+        form.scope_num.data,
+        form.portnum_num.data,
+        form.protocol_num.data,
+        form.service_num.data,
+        form.port_comment_num.data
     ]
     # without 0
     clr_column_indexes = list(filter(lambda a: a > 0, column_indexes))
@@ -3880,6 +3884,22 @@ def project_hosts_multiple_form(project_id, current_project, current_user):
         if form.os_num.data > 0:
             os = line[form.os_num.data - 1]
 
+        port = form.portnum.data
+        protocol = form.protocol.data
+        service = form.service.data
+        port_comment = form.port_comment.data
+        if form.portnum_num.data > 0:
+            port = line[form.host_num.data - 1]
+
+        if form.protocol_num.data > 0:
+            protocol = line[form.protocol_num.data - 1]
+
+        if form.service_num.data > 0:
+            service = line[form.service_num.data - 1]
+
+        if form.port_comment_num.data > 0:
+            port_comment = line[form.port_comment_num.data - 1]
+
         try:
             if form.online_num.data > 0:
                 val = int(line[form.online_num.data - 1])
@@ -3895,16 +3915,32 @@ def project_hosts_multiple_form(project_id, current_project, current_user):
         except ValueError:
             add = 0
 
+        # check ip
         try:
             ipaddress.ip_address(host)
         except:
             add = 0
 
+        # check hostname
         if hostname:
             try:
                 email_validator.validate_email_domain_part(hostname)
             except email_validator.EmailNotValidError:
                 add = 0
+
+        # check port num
+        # if 0 - don't add
+        if form.portnum_num.data > 0:
+            port = line[form.portnum_num.data - 1]
+            try:
+                port = int(port)
+                if port < 0 or port > 65535:
+                    add = 0
+            except Exception:
+                add = 0
+
+        if protocol and protocol.lower() not in ['tcp', 'udp']:
+            add = 0
 
         if not add:
             global_add += 1
@@ -3944,6 +3980,15 @@ def project_hosts_multiple_form(project_id, current_project, current_user):
                             '',
                             current_user['id']
                         )
+                if host_id and port:
+                    port_id = db.select_host_port(host_id, port, protocol.lower() == 'tcp')
+
+                    if port_id:
+                        port_id = port_id[0]['id']
+                        db.update_port_proto_description(port_id, service, port_comment)
+                    else:
+                        port_id = db.insert_host_port(host_id, port, protocol.lower() == 'tcp', service,
+                                                      port_comment, current_user['id'], current_project['id'])
 
     if global_add:
         errors.append('{} lines were not added due to format error!'.format(global_add))
