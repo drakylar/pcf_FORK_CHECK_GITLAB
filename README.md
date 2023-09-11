@@ -107,7 +107,7 @@ when carrying out various works for testing!</b>
 | Tenable.sc                                                                                                                     | Import           | Import .nessus results (ip, port, service type, security issues, os)                                    |
 | aiodnsbrute                                                                                                                    | Import           | Import JSON/CSV results (ip, hostname)                                                                  |
 | Advanced Port Scanner                                                                                                          | Import           | Import XML results (ip, hostname, port)                                                                 |
-| RedCheck                                                                                                                       | Import           | Import XML results (ip, port, security issues)                                                          |
+| RedCheck                                                                                                                       | Import           | Import CSV results (ip, port, security issues)                                                          |
 
 ## 🙋 Table of Contents
 
