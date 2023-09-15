@@ -3215,7 +3215,7 @@ def generate_report(project_id, current_project, current_user):
                             shutil.copyfile(original_image_path, tmp_image_path)
                         elif config['files']['poc_storage'] == 'database':
                             with open(tmp_image_path, 'wb') as f:
-                                f.write(base64.b64decode(project_dict['pocs'][poc_id]['base64']))
+                                f.write(base64.b64decode(project_dict['pocs'][poc_id]['content_base64']))
                                 f.close()
                         project_dict['pocs'][poc_id]['content_image'] = InlineImage(template_obj, tmp_image_path)
                 try:
@@ -3374,7 +3374,7 @@ def generate_report(project_id, current_project, current_user):
                                                         shutil.copyfile(original_image_path, tmp_image_path)
                                                     elif config['files']['poc_storage'] == 'database':
                                                         with open(tmp_image_path, 'wb') as f:
-                                                            f.write(base64.b64decode(project_dict['pocs'][poc_id]['base64']))
+                                                            f.write(base64.b64decode(project_dict['pocs'][poc_id]['content_base64']))
                                                             f.close()
 
                                                     project_dict['pocs'][poc_id]['content_image'] = InlineImage(

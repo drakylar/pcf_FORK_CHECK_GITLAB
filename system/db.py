@@ -3023,7 +3023,7 @@ class Database:
                 content_b = f.read().decode('charmap')
                 f.close()
             elif curr_poc['storage'] == 'database':
-                content_b = base64.b64decode(curr_poc['base64'])
+                content_b = base64.b64decode(curr_poc['base64']).decode('charmap')
             poc_obj['content'] = content_b
             poc_obj['content_base64'] = b64encode(content_b.encode("charmap"))
             poc_obj['content_hex'] = content_b.encode("charmap").hex()
