@@ -3374,7 +3374,8 @@ def generate_report(project_id, current_project, current_user):
                                                         shutil.copyfile(original_image_path, tmp_image_path)
                                                     elif config['files']['poc_storage'] == 'database':
                                                         with open(tmp_image_path, 'wb') as f:
-                                                            f.write(base64.b64decode(project_dict['pocs'][poc_id]['content_base64']))
+                                                            f.write(base64.b64decode(
+                                                                project_dict['pocs'][poc_id]['content_base64']))
                                                             f.close()
 
                                                     project_dict['pocs'][poc_id]['content_image'] = InlineImage(
@@ -3468,7 +3469,7 @@ def generate_report(project_id, current_project, current_user):
                         shutil.copyfile(poc_server_path, poc_save_path)
                     elif current_poc['storage'] == 'database':
                         content_b = base64.b64decode(current_poc['base64'])
-                        f = open(poc_save_path,'wb')
+                        f = open(poc_save_path, 'wb')
                         f.write(content_b)
                         f.close()
                     result_zip_obj.write(poc_save_path)
@@ -4685,3 +4686,81 @@ def edit_task_form(project_id, current_project, current_user):
 
         return jsonify({'status': 'ok'})
     return jsonify({'errors': errors})
+
+
+@routes.route('/project/<uuid:project_id>/todo/export_json',
+              methods=['GET'])
+@requires_authorization
+@check_session
+@check_project_access
+@send_log_data
+def todo_export_tasks_json(project_id, current_project, current_user):
+    tasks = db.select_project_tasks(current_project['id'])
+
+    tasks_arr = []
+
+    for task_obj in tasks:
+        tmp_obj = {
+            'name': task_obj['name'],
+            'description': task_obj['description'],
+            'start_date': task_obj['start_date'],
+            'finish_date': task_obj['finish_date'],
+            'status': task_obj['status'],
+            'criticality': task_obj['criticality'],
+            'teams': [],
+            'users': [],
+            'services': {"ids": {}, "names": []}
+        }
+
+        # add users
+        for obj_user_id in json.loads(task_obj['users']):
+            selected_user = db.select_user_by_id(obj_user_id)[0]
+            tmp_obj['users'].append(
+                {
+                    'id': obj_user_id,
+                    'email': selected_user['email']
+                }
+            )
+
+        # add teams
+
+        for obj_team_id in json.loads(task_obj['teams']):
+            selected_team = db.select_team_by_id(obj_team_id)[0]
+            tmp_obj['teams'].append(
+                {
+                    'id': obj_team_id,
+                    'name': selected_team['name']
+                }
+            )
+
+        # add services
+        tmp_obj['services']['ids'] = json.loads(task_obj['services'])
+        for port_id in json.loads(task_obj['services']):
+
+            port = db.select_port(port_id)[0]
+            host = db.select_host_by_port_id(port_id)[0]
+
+            hostnames_id_list = json.loads(task_obj['services'])[port_id]
+
+            for hostname_id in hostnames_id_list:
+                if hostname_id == '0':
+                    tmp_obj['services']['names'].append(
+                        {
+                            'ip': host['ip'],
+                            'hostname': '',
+                            'port': port['port'],
+                            'is_tcp': bool(port['is_tcp'])
+                        }
+                    )
+                else:
+                    hostname_obj = db.select_hostname(hostname_id)[0]
+                    tmp_obj['services']['names'].append(
+                        {
+                            'ip': host['ip'],
+                            'hostname': hostname_obj['hostname'],
+                            'port': port['port'],
+                            'is_tcp': bool(port['is_tcp'])
+                        }
+                    )
+        tasks_arr.append(tmp_obj)
+    return json.dumps(tasks_arr)
