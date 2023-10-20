@@ -618,6 +618,7 @@
                         }
                     });
                 }
+
             </script>
             <div class="ui top attached tabular menu" id="tab_menu">
                 <a class="active item" data-tab="stats" style="float: left">
@@ -627,7 +628,16 @@
                     <h3 class="ui header"><i class="tasks icon"></i>TODO</h3>
                 </a>
                 <a class="item right" data-tab="todo" style="width:0px;"></a>
-                <a href="/project/{{ current_project['id'] }}/todo/export_json" class="ui orange button" style="float:right; height: fit-content"><i class="plus download icon"></i>Export tasks</a>
+                <button class="ui purple button" style="float:right; height: fit-content"
+                        onclick="$('#import-file').click();">
+                    <i class="plus upload icon"></i>Import tasks
+                </button>
+                <form method="POST" action="/project/{{ current_project['id'] }}/todo/import_json" style="display: none;" enctype='multipart/form-data'>
+                    <input type="file" name="json_files" id="import-file" onchange="form.submit();" multiple="multiple" accept=".json">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                </form>
+                <a href="/project/{{ current_project['id'] }}/todo/export_json" class="ui yellow button"
+                   style="float:right; height: fit-content"><i class="download icon"></i>Export tasks</a>
             </div>
             <div class="ui bottom attached active tab segment" data-tab="stats">
                 <div class="ui container" style="width: 100%;height: 90%">
@@ -676,19 +686,17 @@
                                         $(document).ready(function () {
 
                                                 var options = {
-                                                    series: [{{  stats_dict['project']['percents'] }}],
-                                                    chart: {
-                                                        type: 'radialBar',
-                                                        toolbar: {show: true},
-                                                    },
-                                                    plotOptions: {
-                                                        radialBar: {
-                                                            hollow: {
-                                                                margin: 15,
-                                                                size: '70%',
-                                                                image: '{% if external_img %}
-                                                                    https://apexcharts.com/samples/assets/images/clock.png{% else %}
-                                                                    /static/images/clock.png{% endif %}',
+                                                        series: [{{  stats_dict['project']['percents'] }}],
+                                                        chart: {
+                                                            type: 'radialBar',
+                                                            toolbar: {show: true},
+                                                        },
+                                                        plotOptions: {
+                                                            radialBar: {
+                                                                hollow: {
+                                                                    margin: 15,
+                                                                    size: '70%',
+                                                                    image: '{% if external_img %}https://apexcharts.com/samples/assets/images/clock.png{% else %}/static/images/clock.png{% endif %}',
                                                                 imageWidth: 64,
                                                                 imageHeight: 64,
                                                                 imageClipped: false
@@ -711,7 +719,8 @@
                                                         type: 'image',
                                                         image: {
                                                             src: ['{% if external_img %}
-                                                                https://apexcharts.com/samples/assets/images/4274635880_809a4b9d0d_z.jpg{% else %}
+                                                                https:
+                                                                //apexcharts.com/samples/assets/images/4274635880_809a4b9d0d_z.jpg{% else %}
                                                                 /static/images/stats_background.jpg{% endif %}'],
                                                         }
                                                     },
@@ -732,7 +741,7 @@
                                                             color: '#263238'
                                                         }
                                                     },
-                                                };
+                                                    };
 
                                                 var chart = new ApexCharts(document.querySelector("#stats_clock"), options);
                                                 chart.render();
@@ -1005,10 +1014,10 @@
                                                             {% if hostname_id == '0' %}
                                                                 {{ services['host']['ip'] }}{% else %}
                                                                 {{ db.select_hostname(hostname_id)[0]['hostname'] }}{% endif %}
-                                                                    {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
-                                                                        :{{ services['port']['port'] }}
-                                                                            {% if services['port']['is_tcp'] %}/tcp
-                                                                            {% else %}/udp{% endif %}{% endif %}<br/>
+                                                            {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
+                                                                :{{ services['port']['port'] }}
+                                                                {% if services['port']['is_tcp'] %}/tcp
+                                                                {% else %}/udp{% endif %}{% endif %}<br/>
                                                         {% endfor %}
                                                     {% endfor %}
                                                 </div>
@@ -1118,10 +1127,10 @@
                                                             {% if hostname_id == '0' %}
                                                                 {{ services['host']['ip'] }}{% else %}
                                                                 {{ db.select_hostname(hostname_id)[0]['hostname'] }}{% endif %}
-                                                                    {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
-                                                                        :{{ services['port']['port'] }}
-                                                                            {% if services['port']['is_tcp'] %}/tcp
-                                                                            {% else %}/udp{% endif %}{% endif %}<br/>
+                                                            {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
+                                                                :{{ services['port']['port'] }}
+                                                                {% if services['port']['is_tcp'] %}/tcp
+                                                                {% else %}/udp{% endif %}{% endif %}<br/>
                                                         {% endfor %}
                                                     {% endfor %}
                                                 </div>
@@ -1230,10 +1239,10 @@
                                                             {% if hostname_id == '0' %}
                                                                 {{ services['host']['ip'] }}{% else %}
                                                                 {{ db.select_hostname(hostname_id)[0]['hostname'] }}{% endif %}
-                                                                    {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
-                                                                        :{{ services['port']['port'] }}
-                                                                            {% if services['port']['is_tcp'] %}/tcp
-                                                                            {% else %}/udp{% endif %}{% endif %}<br/>
+                                                            {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
+                                                                :{{ services['port']['port'] }}
+                                                                {% if services['port']['is_tcp'] %}/tcp
+                                                                {% else %}/udp{% endif %}{% endif %}<br/>
                                                         {% endfor %}
                                                     {% endfor %}
                                                 </div>
@@ -1343,10 +1352,10 @@
                                                             {% if hostname_id == '0' %}
                                                                 {{ services['host']['ip'] }}{% else %}
                                                                 {{ db.select_hostname(hostname_id)[0]['hostname'] }}{% endif %}
-                                                                    {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
-                                                                        :{{ services['port']['port'] }}
-                                                                            {% if services['port']['is_tcp'] %}/tcp
-                                                                            {% else %}/udp{% endif %}{% endif %}<br/>
+                                                            {% if not (services['port']['is_tcp']==1 and services['port']['port'] == 0) %}
+                                                                :{{ services['port']['port'] }}
+                                                                {% if services['port']['is_tcp'] %}/tcp
+                                                                {% else %}/udp{% endif %}{% endif %}<br/>
                                                         {% endfor %}
                                                     {% endfor %}
                                                 </div>
@@ -1556,13 +1565,15 @@
                                         <div class="ui dropdown" id="new_task_hosts"
                                              style="width: 100%; min-width: 100%">
                                             <div class="menu transition visible"
-                                                 style="width: 90%; margin-top: -8px; height:410px;">
+                                                 style="width: 90%; min-width: 90%; margin-top: -8px; height:410px;">
                                                 <div class="ui icon search input">
                                                     <i class="search icon"></i>
                                                     <input type="text" name="Search" placeholder="Search&hellip;"
                                                            id="search_host">
                                                 </div>
-                                                <div class="scrolling menu" style="max-height: 343px;" id="hosts_list">
+                                                <div class="scrolling menu"
+                                                     style="height: 100%; max-height: calc(100% - 65px); overflow: auto;"
+                                                     id="hosts_list">
                                                 </div>
                                             </div>
                                         </div>
