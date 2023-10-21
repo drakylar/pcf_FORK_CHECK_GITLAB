@@ -2947,3 +2947,66 @@ def project_rules_use(args, current_user=None, current_token=None,
                                             current_issue['intruder'])
                 if current_issue['id'] not in updated_issues: updated_issues.append(current_issue['id'])
     return {'status': 'ok', 'updated_issues': len(updated_issues)}
+
+
+@routes.route('/api/v1/project/<uuid:project_id>/tasks/list', methods=['POST'])
+@requires_authorization
+@csrf.exempt
+@parser.use_args(only_token_args, location='json')
+@check_access_token
+@check_project_access
+def project_todo_list(args, current_user=None, current_token=None,
+                        user_id='', project_id=None, current_project=None):
+    """
+    POST /api/v1/project/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/tasks/list HTTP/1.1
+    Host: 127.0.0.1:5000
+    Content-Type: application/json
+    Content-Length: 353
+
+    {
+        "access_token": "aed4ce53-c90f-436b-9909-79a2abf7cdaf"
+    }
+    """
+
+    tasks = db.select_project_tasks(current_project['id'])
+    tasks_list = {
+        'tasks': []
+    }
+    for task in tasks:
+        task_obj = {
+            "task_id": task["id"],
+            "name": task["name"],
+            "description": task["description"],
+            "start_date": int(task["start_date"]),
+            "finish_date": int(task["finish_date"]),
+            "status": task["status"],
+            "users": [],
+            "teams": [],
+            "services": json.loads(task["services"]),
+            "criticality": task["criticality"]
+        }
+
+        for obj_user_id in json.loads(task['users']):
+            selected_user = db.select_user_by_id(obj_user_id)[0]
+            task_obj['users'].append(
+                {
+                    'id': obj_user_id,
+                    'email': selected_user['email'],
+                    'fname': selected_user['fname'],
+                    'lname': selected_user['lname'],
+                    'company': selected_user['company']
+                }
+            )
+
+        # add teams
+
+        for obj_team_id in json.loads(task['teams']):
+            selected_team = db.select_team_by_id(obj_team_id)[0]
+            task_obj['teams'].append(
+                {
+                    'id': obj_team_id,
+                    'name': selected_team['name']
+                }
+            )
+        tasks_list['tasks'].append(task_obj)
+    return tasks_list
