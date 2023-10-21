@@ -199,6 +199,20 @@ def check_project_host_access(fn):
     return decorated_view
 
 
+def check_project_task_access(fn):
+    @wraps(fn)
+    def decorated_view(*args, **kwargs):
+        current_project = kwargs['current_project']
+        task_id = kwargs['task_id']
+        current_task = db.select_task(str(task_id), current_project['id'])
+        if not current_task:
+            return fail(["Task not found!"])
+        kwargs['current_task'] = current_task[0]
+        return fn(*args, **kwargs)
+
+    return decorated_view
+
+
 def check_project_port_access(fn):
     @wraps(fn)
     def decorated_view(*args, **kwargs):
@@ -1852,7 +1866,7 @@ def project_issues_list(args, current_user=None, current_token=None,
 @check_access_token
 @check_project_access
 def project_issues_search(args, current_user=None, current_token=None,
-                        user_id='', project_id=None, current_project=None):
+                          user_id='', project_id=None, current_project=None):
     """
     POST /api/v1/project/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/issues/search HTTP/1.1
     Host: 127.0.0.1:5000
@@ -1915,6 +1929,7 @@ def project_issues_search(args, current_user=None, current_token=None,
         }
         issues_list['issues'].append(issue_obj)
     return issues_list
+
 
 @routes.route('/api/v1/project/<uuid:project_id>/issues/<uuid:issue_id>/info', methods=['POST'])
 @requires_authorization
@@ -2210,7 +2225,6 @@ def project_issue_edit(args, current_user=None, current_token=None,
 
     # update fields
 
-
     add_fields_dict = {}
     old_fields = json.loads(current_issue['fields'])
     if args['fields'] != None:
@@ -2349,7 +2363,8 @@ def project_issue_poc_add(args, current_user=None, current_token=None,
 @check_project_issue_access
 @check_project_issue_poc
 def project_issue_poc_info(args, current_user=None, current_token=None,
-                           user_id='', project_id=None, current_project=None, issue_id='', current_issue=None, poc_id='', current_poc=None
+                           user_id='', project_id=None, current_project=None, issue_id='', current_issue=None,
+                           poc_id='', current_poc=None
                            ):
     """
     POST /api/v1/project/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/issues/ef8d2e2d-1da8-422d-b112-8a1805c947a9/poc/a40820cf-088e-40ab-a844-bb4ba10ff397/info HTTP/1.1
@@ -2386,7 +2401,8 @@ def project_issue_poc_info(args, current_user=None, current_token=None,
 @check_project_issue_access
 @check_project_issue_poc
 def project_issue_poc_delete(args, current_user=None, current_token=None,
-                             user_id='', project_id=None, current_project=None, issue_id='', current_issue=None, poc_id='', current_poc=None
+                             user_id='', project_id=None, current_project=None, issue_id='', current_issue=None,
+                             poc_id='', current_poc=None
                              ):
     """
     POST /api/v1/project/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/issues/ef8d2e2d-1da8-422d-b112-8a1805c947a9/poc/a40820cf-088e-40ab-a844-bb4ba10ff397/delete HTTP/1.1
@@ -2746,7 +2762,8 @@ def project_rules_use(args, current_user=None, current_token=None,
                         # check for additional fields
                         new_name = field_name.strip('_')
                         for issue_field_name in current_issue['fields']:
-                            if issue_field_name == new_name and current_issue['fields'][issue_field_name]['type'] != 'file':
+                            if issue_field_name == new_name and current_issue['fields'][issue_field_name][
+                                'type'] != 'file':
                                 compare_str = str(current_issue['fields'][issue_field_name]['val'])
 
                     variable_value = ''
@@ -2783,8 +2800,9 @@ def project_rules_use(args, current_user=None, current_token=None,
                         field_original_value = ''
                         found = False
                         special_var = False
-                        if field_name in ['name', 'description', 'fix', 'url', 'cvss', 'cve', 'cwe', 'status', 'technical'
-                                                                                                               'risks', 'references', 'intruder']:
+                        if field_name in ['name', 'description', 'fix', 'url', 'cvss', 'cve', 'cwe', 'status',
+                                          'technical'
+                                          'risks', 'references', 'intruder']:
                             field_original_value = current_issue[field_name]
                             issue_changed = True
                             found = True
@@ -2797,7 +2815,8 @@ def project_rules_use(args, current_user=None, current_token=None,
                             # check for additional fields
                             new_name = field_name.strip('_')
                             for issue_field_name in current_issue['fields']:
-                                if issue_field_name == new_name and current_issue['fields'][issue_field_name]['type'] != 'file':
+                                if issue_field_name == new_name and current_issue['fields'][issue_field_name][
+                                    'type'] != 'file':
                                     issue_changed = True
                                     found = True
                                     field_original_value = str(current_issue['fields'][issue_field_name]['val'])
@@ -2844,7 +2863,8 @@ def project_rules_use(args, current_user=None, current_token=None,
                                 except Exception as e:
                                     pass
                     else:
-                        current_template = db.check_user_issue_template_access(replace_rule['id'], current_user['id'], current_user['email'])[0]
+                        current_template = db.check_user_issue_template_access(replace_rule['id'], current_user['id'],
+                                                                               current_user['email'])[0]
                         current_template['variables'] = json.loads(current_template['variables'])
                         replace_rule['template_obj'] = current_template
 
@@ -2875,13 +2895,17 @@ def project_rules_use(args, current_user=None, current_token=None,
                             if field_name in replace_rule['vars']:
                                 try:
                                     if current_template['variables'][field_name]["type"] == "boolean":
-                                        current_template['variables'][field_name]["val"] = bool(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = bool(
+                                            replace_rule['vars'][field_name])
                                     elif current_template['variables'][field_name]["type"] == "number":
-                                        current_template['variables'][field_name]["val"] = int(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = int(
+                                            replace_rule['vars'][field_name])
                                     elif current_template['variables'][field_name]["type"] == "float":
-                                        current_template['variables'][field_name]["val"] = float(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = float(
+                                            replace_rule['vars'][field_name])
                                     elif current_template['variables'][field_name]["type"] == "text":
-                                        current_template['variables'][field_name]["val"] = str(replace_rule['vars'][field_name])
+                                        current_template['variables'][field_name]["val"] = str(
+                                            replace_rule['vars'][field_name])
                                     issue_changed = True
                                 except Exception as e:
                                     pass
@@ -2940,10 +2964,13 @@ def project_rules_use(args, current_user=None, current_token=None,
                         }
                 # submit issue
                 db.update_issue_with_fields(current_issue['id'], current_issue['name'], current_issue['description'],
-                                            current_issue['url_path'], current_issue['cvss'], json.loads(current_issue['services']),
-                                            current_issue['status'], current_issue['cve'], current_issue['cwe'], current_issue['fix'],
+                                            current_issue['url_path'], current_issue['cvss'],
+                                            json.loads(current_issue['services']),
+                                            current_issue['status'], current_issue['cve'], current_issue['cwe'],
+                                            current_issue['fix'],
                                             current_issue['type'], current_issue['param'], current_issue['fields'],
-                                            current_issue['technical'], current_issue['risks'], current_issue['references'],
+                                            current_issue['technical'], current_issue['risks'],
+                                            current_issue['references'],
                                             current_issue['intruder'])
                 if current_issue['id'] not in updated_issues: updated_issues.append(current_issue['id'])
     return {'status': 'ok', 'updated_issues': len(updated_issues)}
@@ -2956,7 +2983,7 @@ def project_rules_use(args, current_user=None, current_token=None,
 @check_access_token
 @check_project_access
 def project_todo_list(args, current_user=None, current_token=None,
-                        user_id='', project_id=None, current_project=None):
+                      user_id='', project_id=None, current_project=None):
     """
     POST /api/v1/project/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/tasks/list HTTP/1.1
     Host: 127.0.0.1:5000
@@ -3010,3 +3037,62 @@ def project_todo_list(args, current_user=None, current_token=None,
             )
         tasks_list['tasks'].append(task_obj)
     return tasks_list
+
+
+@routes.route('/api/v1/project/<uuid:project_id>/task/<uuid:task_id>/info', methods=['POST'])
+@requires_authorization
+@csrf.exempt
+@parser.use_args(only_token_args, location='json')
+@check_access_token
+@check_project_access
+@check_project_task_access
+def project_todo_task_info(args, current_user=None, current_token=None,
+                           user_id='', project_id=None, current_project=None,
+                           task_id=None, current_task=None):
+    """
+    POST /api/v1/project/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/task/53ade0ed-ea2d-4812-9676-8bdcf5b7412c/info HTTP/1.1
+    Host: 127.0.0.1:5000
+    Content-Type: application/json
+    Content-Length: 353
+
+    {
+        "access_token": "aed4ce53-c90f-436b-9909-79a2abf7cdaf"
+    }
+    """
+
+    task_obj = {
+        "task_id": current_task["id"],
+        "name": current_task["name"],
+        "description": current_task["description"],
+        "start_date": int(current_task["start_date"]),
+        "finish_date": int(current_task["finish_date"]),
+        "status": current_task["status"],
+        "users": [],
+        "teams": [],
+        "services": json.loads(current_task["services"]),
+        "criticality": current_task["criticality"]
+    }
+
+    for obj_user_id in json.loads(current_task['users']):
+        selected_user = db.select_user_by_id(obj_user_id)[0]
+        task_obj['users'].append(
+            {
+                'id': obj_user_id,
+                'email': selected_user['email'],
+                'fname': selected_user['fname'],
+                'lname': selected_user['lname'],
+                'company': selected_user['company']
+            }
+        )
+
+    # add teams
+
+    for obj_team_id in json.loads(current_task['teams']):
+        selected_team = db.select_team_by_id(obj_team_id)[0]
+        task_obj['teams'].append(
+            {
+                'id': obj_team_id,
+                'name': selected_team['name']
+            }
+        )
+    return task_obj
