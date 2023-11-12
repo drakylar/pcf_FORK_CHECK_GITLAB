@@ -1,4 +1,6 @@
 ######## Imports #########
+import logging
+
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
@@ -116,4 +118,5 @@ def process_request(
     if success:
         return ""
     else:
+        logging.error("This string will be in error log")
         return "There were some errors! (user will get this error string)"
