@@ -1277,11 +1277,6 @@ class DNSreconForm(FlaskForm):
     ignore_ipv6 = IntegerField('ignore_ipv6', default=0)
 
 
-class theHarvesterForm(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    hosts_description = StringField('hosts_description', default='Added from theHarvester scan')
-    hostnames_description = StringField('hostnames_description', default='Added from theHarvester scan')
-
 
 class MetasploitForm(FlaskForm):
     xml_files = MultipleFileField('xml_files')
