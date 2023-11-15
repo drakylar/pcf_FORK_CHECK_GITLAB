@@ -5856,96 +5856,6 @@ def maxpatrol_form(project_id, current_project, current_user):
                            errors=errors)
 
 
-@routes.route('/project/<uuid:project_id>/tools/scanvus/', methods=['GET'])
-@requires_authorization
-@check_session
-@check_project_access
-@check_project_archived
-@send_log_data
-def scanvus_page(project_id, current_project, current_user):
-    return render_template('project/tools/import/scanvus.html',
-                           current_project=current_project,
-                           tab_name='Scanvus')
-
-
-@routes.route('/project/<uuid:project_id>/tools/scanvus/', methods=['POST'])
-@requires_authorization
-@check_session
-@check_project_access
-@check_project_archived
-@send_log_data
-def scanvus_page_form(project_id, current_project, current_user):
-    form = ScanvusForm()
-    form.validate()
-    errors = []
-    if form.errors:
-        for field in form.errors:
-            for error in form.errors[field]:
-                errors.append(error)
-
-    if not errors:
-        host_id = None
-        port_id = None
-        if form.host_id.data and is_valid_uuid(form.host_id.data):
-            current_host = db.select_project_host(current_project['id'], form.host_id.data)
-            if current_host:
-                current_host = current_host[0]
-                host_id = current_host['id']
-        elif form.ip.data:
-            try:
-                ipaddress.ip_address(form.ip.data)
-                current_host = db.select_project_host_by_ip(current_project['id'], form.ip.data)
-                if current_host:
-                    current_host = current_host[0]
-                    host_id = current_host['id']
-                else:
-                    host_id = db.insert_host(current_project['id'], form.ip.data, current_user['id'],
-                                             comment=form.host_description.data, os='Linux')
-            except Exception as e:
-                pass
-        if host_id:
-            port_id = db.select_host_port(host_id)[0]['id']
-        for file in form.json_files.data:
-            if file.filename:
-                json_report_data = file.read().decode('charmap')
-                scan_result = json.loads(json_report_data)
-                for script_name in scan_result:
-                    vuln_versions = ''
-                    for package_name in scan_result[script_name]['packages']:
-                        package_obj = scan_result[script_name]['packages'][package_name]
-                        operator = package_obj['operator'].replace('lt', '<')
-                        operator = operator.replace('gt', '>')
-                        version = package_obj['bulletinVersion']
-                        if len(operator) in ['gt', 'lt']:
-                            operator = '='
-                        vuln_versions += '{} {}{},'.format(package_name, operator, version)
-                    vuln_versions = vuln_versions.strip('\n')
-                    vuln_obj = scan_result[script_name]['vuln']
-                    vuln_level = vuln_obj['Level']
-                    vuln_cves = ','.join(vuln_obj['CVE List'])
-                    vuln_cvss_num = vuln_obj['CVSS']['score']
-                    vuln_cvss_vector = vuln_obj['CVSS']['vector']
-
-                    vuln_desc_full = ''
-                    if vuln_versions:
-                        vuln_desc_full += 'Vulnerable software: ' + vuln_versions
-
-                    vuln_services = {}
-                    if port_id:
-                        vuln_services = {port_id: ["0"]}
-
-                    issue_id = db.insert_new_issue_no_dublicate('Scanvus: {}'.format(script_name),
-                                                                vuln_desc_full, '', vuln_cvss_num, current_user['id'],
-                                                                vuln_services,
-                                                                'need to recheck', current_project['id'], cve=vuln_cves
-
-                                                                )
-    return render_template('project/tools/import/scanvus.html',
-                           current_project=current_project,
-                           tab_name='Scanvus',
-                           errors=errors)
-
-
 @routes.route('/project/<uuid:project_id>/tools/aiodnsbrute/', methods=['GET'])
 @requires_authorization
 @check_session
@@ -6315,7 +6225,6 @@ for module_name in modules:
     process_request = import_plugin.process_request
 
 
-
     def render_page(current_project, current_user, import_plugin, path_to_module, errors=None):
         # plugin data
         tools_description = import_plugin.tools_description
@@ -6347,7 +6256,8 @@ for module_name in modules:
             field_class = getattr(input_obj, 'field_class')
             field_kwargs = getattr(input_obj, 'kwargs')
             input_meta = getattr(input_obj, 'kwargs')["_meta"]
-            required_str = "required" if wtforms.validators.DataRequired in [x.__class__ for x in field_kwargs['validators']] else ""
+            required_str = "required" if wtforms.validators.DataRequired in [x.__class__ for x in
+                                                                             field_kwargs['validators']] else ""
             input_html = ""
             if field_class == wtforms.fields.simple.MultipleFileField:
                 input_html = """
@@ -6369,7 +6279,7 @@ for module_name in modules:
                             <input type="number" name="{}" placeholder="{}" value="{}" {}>
                         """.format(field_kwargs["description"],
                                    input_name,
-                                    field_kwargs['default'] if 'default' in field_kwargs else '',
+                                   field_kwargs['default'] if 'default' in field_kwargs else '',
                                    field_kwargs['default'] if 'default' in field_kwargs else '',
                                    required_str)
             elif field_class == wtforms.fields.BooleanField:
@@ -6452,8 +6362,9 @@ for module_name in modules:
                 elif class_name == wtforms.fields.simple.MultipleFileField:
                     input_dict[input_name] = []
                     for file_obj in input_obj.data:
-                        file_data = file_obj.read()  # codecs.iterdecode(file, 'utf-8')
-                        input_dict[input_name].append(file_data)
+                        if file_obj.filename:
+                            file_data = file_obj.read()  # codecs.iterdecode(file, 'utf-8')
+                            input_dict[input_name].append(file_data)
             try:
                 error_str = process_request(current_user, current_project, db, input_dict)
             except OverflowError as e:

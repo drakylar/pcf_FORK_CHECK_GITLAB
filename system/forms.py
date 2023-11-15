@@ -1371,12 +1371,6 @@ class RuleUseForm(FlaskForm):
     rules_ids = StringField('rule_ids', default='')
 
 
-class ScanvusForm(FlaskForm):
-    json_files = MultipleFileField('json_files')
-    host_id = StringField('new_host', default='-')
-    ip = StringField('ip', default='')
-    host_description = StringField('host_description', default='')
-
 
 class AddNewTask(FlaskForm):
     name = StringField('name', validators=[DataRequired(message='Name required!')])
