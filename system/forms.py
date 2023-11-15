@@ -935,12 +935,6 @@ class DuplicatorForm(FlaskForm):
                                              )
 
 
-class WPScanForm(FlaskForm):
-    json_files = MultipleFileField('json_files')
-    auto_resolve = IntegerField('auto_resolve', default=0)
-    host = StringField('host', default='')
-
-
 class NewIssueTemplate(FlaskForm):
     name = StringField('name', default='')
     description = StringField('description', default='')
@@ -1445,13 +1439,6 @@ class AdvancedPortScanner(FlaskForm):
     ignore_ports = StringField('ignore_ports', default='')
     hosts_description = StringField('hosts_description', default='Added from Advanced Port Scanner')
     hostnames_description = StringField('hostnames_description', default='Added from Advanced Port Scanner')
-
-
-class RedCheckForm(FlaskForm):
-    csv_files = MultipleFileField('csv_files')
-    hosts_description = StringField('hosts_description', default='Added from RedCheck scan')
-    hostnames_description = StringField('hostnames_description', default='Added from RedCheck scan')
-    ports_description = StringField('ports_description', default='Added from RedCheck scan')
 
 
 class TODOImportJSONForm(FlaskForm):
