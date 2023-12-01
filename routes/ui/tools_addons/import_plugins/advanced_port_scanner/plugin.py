@@ -36,7 +36,7 @@ tools_description = [
 # FlaskWTF forms https://flask-wtf.readthedocs.io/en/1.2.x/
 
 class ToolArguments(FlaskForm):
-    json_files = MultipleFileField(
+    files = MultipleFileField(
         label='files',
         description='.xml reports',
         default=None,
@@ -83,7 +83,7 @@ def process_request(
         input_dict: object  # dict with keys - input field names, and values.
 ) -> str:  # returns error text or "" (if finished successfully)
     # xml files
-    for bin_file_data in input_dict['json_files']:
+    for bin_file_data in input_dict['files']:
         try:
             file_data = bin_file_data.decode("charmap")
             scan_result = BeautifulSoup(file_data, "lxml")
