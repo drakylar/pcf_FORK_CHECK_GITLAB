@@ -834,15 +834,6 @@ class ShodanForm(FlaskForm):
     need_network = IntegerField('need_networks', default=0)
 
 
-class Netsparker(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    only_confirmed = IntegerField('only_confirmed', default=0)
-    hosts_description = StringField('hosts_description', default='Added from NetSparker scan')
-    hostnames_description = StringField('hostnames_description', default='Added from NetSparker scan')
-    ports_description = StringField('ports_description', default='Added from NetSparker scan')
-    # csv_files = MultipleFileField('csv_files')
-
-
 class EditServiceForm(FlaskForm):
     port = StringField('port', validators=[DataRequired(message='Port number required!')])
     service = StringField('service', default='')
