@@ -90,143 +90,71 @@ def process_request(
 ) -> str:  # returns error text or "" (if finished successfully)
     # xml files
     for bin_file_data in input_dict['json_files']:
-        try:
-            json_report_data = bin_file_data.decode('charmap').replace(',]', ']').replace(',}', '}')
-            scan_result = json.loads(json_report_data)
-            host = scan_result['ip']
-            hostname = scan_result['host'] if scan_result['ip'] != scan_result['host'] else ''
-            issues = scan_result['vulnerabilities']
-            port = int(scan_result['port'])
-            protocol = 'https' if '443' in str(port) else 'http'
-            is_tcp = 1
-            port_description = 'Added by Nikto scan'
-            if scan_result['banner']:
-                port_description = 'Nikto banner: {}'.format(
-                    scan_result['banner'])
+        if bin_file_data:
+            try:
+                json_report_data = bin_file_data.decode('charmap').replace(',]', ']').replace(',}', '}')
+                scan_result = json.loads(json_report_data)
+                host = scan_result['ip']
+                hostname = scan_result['host'] if scan_result['ip'] != scan_result['host'] else ''
+                issues = scan_result['vulnerabilities']
+                port = int(scan_result['port'])
+                protocol = 'https' if '443' in str(port) else 'http'
+                is_tcp = 1
+                port_description = 'Added by Nikto scan'
+                if scan_result['banner']:
+                    port_description = 'Nikto banner: {}'.format(
+                        scan_result['banner'])
 
-            # add host
-            host_id = db.select_project_host_by_ip(current_project['id'],
-                                                   host)
-            if not host_id:
-                host_id = db.insert_host(current_project['id'],
-                                         host,
-                                         current_user['id'],
-                                         input_dict['hosts_description'])
-            else:
-                host_id = host_id[0]['id']
-
-            # add hostname
-
-            hostname_id = ''
-            if hostname and hostname != host:
-                hostname_id = db.select_ip_hostname(host_id, hostname)
-                if not hostname_id:
-                    hostname_id = db.insert_hostname(host_id,
-                                                     hostname,
-                                                     input_dict['hostnames_description'],
-                                                     current_user['id'])
+                # add host
+                host_id = db.select_project_host_by_ip(current_project['id'],
+                                                       host)
+                if not host_id:
+                    host_id = db.insert_host(current_project['id'],
+                                             host,
+                                             current_user['id'],
+                                             input_dict['hosts_description'])
                 else:
-                    hostname_id = hostname_id[0]['id']
+                    host_id = host_id[0]['id']
 
-            # add port
-            port_id = db.select_ip_port(host_id, port, is_tcp)
-            if not port_id:
-                port_id = db.insert_host_port(host_id,
-                                              port,
-                                              is_tcp,
-                                              protocol,
-                                              port_description,
-                                              current_user['id'],
-                                              current_project['id'])
-            else:
-                port_id = port_id[0]['id']
+                # add hostname
 
-            for issue in issues:
-                method = issue['method']
-                url = issue['url']
-                full_url = '{} {}'.format(method, url)
-                osvdb = int(issue['OSVDB'])
-                info = issue['msg']
-                full_info = 'OSVDB: {}\n\n{}'.format(osvdb, info)
-
-                services = {port_id: ['0']}
-                if hostname_id:
-                    services = {port_id: ['0', hostname_id]}
-
-                db.insert_new_issue('Nikto scan', full_info, full_url, 0,
-                                    current_user['id'], services,
-                                    'need to check',
-                                    current_project['id'],
-                                    cve=0,
-                                    cwe=0,
-                                    )
-
-        except Exception as e:
-            logging.error("Error during parsing report: {}".format(e))
-            return "Error during parsing JSON report"
-
-    for bin_file_data in input_dict['csv_files']:
-        try:
-            f = StringIO(bin_file_data.decode('charmap'))
-
-            scan_result = csv.reader(f, delimiter=',')
-
-            for issue in scan_result:
-                if len(issue) == 7:
-                    hostname = issue[0]
-                    host = issue[1]
-                    port = int(issue[2])
-                    protocol = 'https' if '443' in str(port) else 'http'
-                    is_tcp = 1
-                    osvdb = issue[3]
-                    full_url = '{} {}'.format(issue[4], issue[5])
-                    full_info = 'OSVDB: {}\n{}'.format(osvdb, issue[6])
-
-                    # add host
-                    host_id = db.select_project_host_by_ip(
-                        current_project['id'],
-                        host)
-                    if not host_id:
-                        host_id = db.insert_host(current_project['id'],
-                                                 host,
-                                                 current_user['id'],
-                                                 input_dict['hosts_description'])
+                hostname_id = ''
+                if hostname and hostname != host:
+                    hostname_id = db.select_ip_hostname(host_id, hostname)
+                    if not hostname_id:
+                        hostname_id = db.insert_hostname(host_id,
+                                                         hostname,
+                                                         input_dict['hostnames_description'],
+                                                         current_user['id'])
                     else:
-                        host_id = host_id[0]['id']
+                        hostname_id = hostname_id[0]['id']
 
-                    # add hostname
-                    hostname_id = ''
-                    if hostname and hostname != host:
-                        hostname_id = db.select_ip_hostname(host_id,
-                                                            hostname)
-                        if not hostname_id:
-                            hostname_id = db.insert_hostname(host_id,
-                                                             hostname,
-                                                             input_dict['hostnames_description'],
-                                                             current_user['id'])
-                        else:
-                            hostname_id = hostname_id[0]['id']
+                # add port
+                port_id = db.select_ip_port(host_id, port, is_tcp)
+                if not port_id:
+                    port_id = db.insert_host_port(host_id,
+                                                  port,
+                                                  is_tcp,
+                                                  protocol,
+                                                  port_description,
+                                                  current_user['id'],
+                                                  current_project['id'])
+                else:
+                    port_id = port_id[0]['id']
 
-                    # add port
-                    port_id = db.select_ip_port(host_id, port, is_tcp)
-                    if not port_id:
-                        port_id = db.insert_host_port(host_id,
-                                                      port,
-                                                      is_tcp,
-                                                      protocol,
-                                                      input_dict['ports_description'],
-                                                      current_user['id'],
-                                                      current_project['id'])
-                    else:
-                        port_id = port_id[0]['id']
+                for issue in issues:
+                    method = issue['method']
+                    url = issue['url']
+                    full_url = '{} {}'.format(method, url)
+                    osvdb = int(issue['OSVDB'])
+                    info = issue['msg']
+                    full_info = 'OSVDB: {}\n\n{}'.format(osvdb, info)
 
-                    # add issue
                     services = {port_id: ['0']}
                     if hostname_id:
                         services = {port_id: ['0', hostname_id]}
 
-                    db.insert_new_issue('Nikto scan', full_info, full_url,
-                                        0,
+                    db.insert_new_issue('Nikto scan', full_info, full_url, 0,
                                         current_user['id'], services,
                                         'need to check',
                                         current_project['id'],
@@ -234,90 +162,165 @@ def process_request(
                                         cwe=0,
                                         )
 
-        except Exception as e:
-            logging.error("Error during parsing report: {}".format(e))
-            return "Error during parsing CSV report"
+            except Exception as e:
+                logging.error("Error during parsing report: {}".format(e))
+                return "Error during parsing JSON report"
+
+    for bin_file_data in input_dict['csv_files']:
+        if bin_file_data:
+            try:
+                f = StringIO(bin_file_data.decode('charmap'))
+
+                scan_result = csv.reader(f, delimiter=',')
+
+                for issue in scan_result:
+                    if len(issue) == 7:
+                        hostname = issue[0]
+                        host = issue[1]
+                        port = int(issue[2])
+                        protocol = 'https' if '443' in str(port) else 'http'
+                        is_tcp = 1
+                        osvdb = issue[3]
+                        full_url = '{} {}'.format(issue[4], issue[5])
+                        full_info = 'OSVDB: {}\n{}'.format(osvdb, issue[6])
+
+                        # add host
+                        host_id = db.select_project_host_by_ip(
+                            current_project['id'],
+                            host)
+                        if not host_id:
+                            host_id = db.insert_host(current_project['id'],
+                                                     host,
+                                                     current_user['id'],
+                                                     input_dict['hosts_description'])
+                        else:
+                            host_id = host_id[0]['id']
+
+                        # add hostname
+                        hostname_id = ''
+                        if hostname and hostname != host:
+                            hostname_id = db.select_ip_hostname(host_id,
+                                                                hostname)
+                            if not hostname_id:
+                                hostname_id = db.insert_hostname(host_id,
+                                                                 hostname,
+                                                                 input_dict['hostnames_description'],
+                                                                 current_user['id'])
+                            else:
+                                hostname_id = hostname_id[0]['id']
+
+                        # add port
+                        port_id = db.select_ip_port(host_id, port, is_tcp)
+                        if not port_id:
+                            port_id = db.insert_host_port(host_id,
+                                                          port,
+                                                          is_tcp,
+                                                          protocol,
+                                                          input_dict['ports_description'],
+                                                          current_user['id'],
+                                                          current_project['id'])
+                        else:
+                            port_id = port_id[0]['id']
+
+                        # add issue
+                        services = {port_id: ['0']}
+                        if hostname_id:
+                            services = {port_id: ['0', hostname_id]}
+
+                        db.insert_new_issue('Nikto scan', full_info, full_url,
+                                            0,
+                                            current_user['id'], services,
+                                            'need to check',
+                                            current_project['id'],
+                                            cve=0,
+                                            cwe=0,
+                                            )
+
+            except Exception as e:
+                logging.error("Error during parsing report: {}".format(e))
+                return "Error during parsing CSV report"
 
     for bin_file_data in input_dict['xml_files']:
-        try:
-            scan_result = BeautifulSoup(bin_file_data.decode('charmap'), "html.parser").niktoscan.scandetails
-            host = scan_result['targetip']
-            port = int(scan_result['targetport'])
-            is_tcp = 1
-            port_banner = scan_result['targetbanner']
-            hostname = scan_result['targethostname']
-            issues = scan_result.findAll("item")
-            protocol = 'https' if '443' in str(port) else 'http'
-            port_description = ''
-            if port_banner:
-                port_description = 'Nikto banner: {}'.format(
-                    scan_result['targetbanner'])
+        if bin_file_data:
+            try:
+                scan_result = BeautifulSoup(bin_file_data.decode('charmap'), "html.parser").niktoscan.scandetails
+                host = scan_result['targetip']
+                port = int(scan_result['targetport'])
+                is_tcp = 1
+                port_banner = scan_result['targetbanner']
+                hostname = scan_result['targethostname']
+                issues = scan_result.findAll("item")
+                protocol = 'https' if '443' in str(port) else 'http'
+                port_description = ''
+                if port_banner:
+                    port_description = 'Nikto banner: {}'.format(
+                        scan_result['targetbanner'])
 
-            # add host
-            host_id = db.select_project_host_by_ip(
-                current_project['id'],
-                host)
-            if not host_id:
-                host_id = db.insert_host(current_project['id'],
-                                         host,
-                                         current_user['id'],
-                                         input_dict['hosts_description.data'])
-            else:
-                host_id = host_id[0]['id']
-
-            # add hostname
-            hostname_id = ''
-            if hostname and hostname != host:
-                hostname_id = db.select_ip_hostname(host_id,
-                                                    hostname)
-                if not hostname_id:
-                    hostname_id = db.insert_hostname(host_id,
-                                                     hostname,
-                                                     input_dict['hostnames_description'],
-                                                     current_user['id'])
+                # add host
+                host_id = db.select_project_host_by_ip(
+                    current_project['id'],
+                    host)
+                if not host_id:
+                    host_id = db.insert_host(current_project['id'],
+                                             host,
+                                             current_user['id'],
+                                             input_dict['hosts_description.data'])
                 else:
-                    hostname_id = hostname_id[0]['id']
+                    host_id = host_id[0]['id']
 
-            # add port
-            port_id = db.select_ip_port(host_id, port, is_tcp)
-            if not port_id:
-                port_id = db.insert_host_port(host_id,
-                                              port,
-                                              is_tcp,
-                                              protocol,
-                                              port_description,
-                                              current_user['id'],
-                                              current_project['id'])
-            else:
-                port_id = port_id[0]['id']
+                # add hostname
+                hostname_id = ''
+                if hostname and hostname != host:
+                    hostname_id = db.select_ip_hostname(host_id,
+                                                        hostname)
+                    if not hostname_id:
+                        hostname_id = db.insert_hostname(host_id,
+                                                         hostname,
+                                                         input_dict['hostnames_description'],
+                                                         current_user['id'])
+                    else:
+                        hostname_id = hostname_id[0]['id']
 
-            for issue in issues:
-                method = issue['method']
-                url = issue.uri.contents[0]
-                full_url = '{} {}'.format(method, url)
-                references = issue.references.contents[0] if issue.references and issue.references.contents else ''
-                full_info = issue.description.contents[0]
+                # add port
+                port_id = db.select_ip_port(host_id, port, is_tcp)
+                if not port_id:
+                    port_id = db.insert_host_port(host_id,
+                                                  port,
+                                                  is_tcp,
+                                                  protocol,
+                                                  port_description,
+                                                  current_user['id'],
+                                                  current_project['id'])
+                else:
+                    port_id = port_id[0]['id']
 
-                # small fixes for https://gitlab.com/invuls/pentest-projects/pcf/-/issues/167
-                osvdb = int(issue['osvdbid']) if 'osvdbid' in issue else ''
-                if osvdb:
-                    full_info = 'OSVDB: {}\n\n'.format(osvdb) + full_info
+                for issue in issues:
+                    method = issue['method']
+                    url = issue.uri.contents[0]
+                    full_url = '{} {}'.format(method, url)
+                    references = issue.references.contents[0] if issue.references and issue.references.contents else ''
+                    full_info = issue.description.contents[0]
 
-                services = {port_id: ['0']}
-                if hostname_id:
-                    services = {port_id: ['0', hostname_id]}
+                    # small fixes for https://gitlab.com/invuls/pentest-projects/pcf/-/issues/167
+                    osvdb = int(issue['osvdbid']) if 'osvdbid' in issue else ''
+                    if osvdb:
+                        full_info = 'OSVDB: {}\n\n'.format(osvdb) + full_info
 
-                db.insert_new_issue('Nikto scan', full_info, full_url, 0,
-                                    current_user['id'], services,
-                                    'need to check',
-                                    current_project['id'],
-                                    cve=0,
-                                    cwe=0,
-                                    references=references
-                                    )
+                    services = {port_id: ['0']}
+                    if hostname_id:
+                        services = {port_id: ['0', hostname_id]}
 
-        except Exception as e:
-            logging.error("Error during parsing report: {}".format(e))
-            return "Error during parsing XML report"
+                    db.insert_new_issue('Nikto scan', full_info, full_url, 0,
+                                        current_user['id'], services,
+                                        'need to check',
+                                        current_project['id'],
+                                        cve=0,
+                                        cwe=0,
+                                        references=references
+                                        )
+
+            except Exception as e:
+                logging.error("Error during parsing report: {}".format(e))
+                return "Error during parsing XML report"
 
     return ""
