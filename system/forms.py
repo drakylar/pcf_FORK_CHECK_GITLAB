@@ -1311,10 +1311,6 @@ class DeletePath(FlaskForm):
                           validators=[UUID(message='Wrong UUID!')])
 
 
-class PingCastleForm(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-
-
 class MaxpatrolForm(FlaskForm):
     xml_files = MultipleFileField('xml_files')
     add_empty_host = IntegerField('add_empty_host', default=0)
