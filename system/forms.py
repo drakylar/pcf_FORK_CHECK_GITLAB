@@ -654,13 +654,6 @@ class NessusForm(FlaskForm):
     only_import_network = IntegerField('only_import_network', default=0)
 
 
-class QualysForm(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    add_empty_host = IntegerField('add_empty_host', default=0)
-    hosts_description = StringField('hosts_description', default='Added from Qualys scan')
-    ports_description = StringField('ports_description', default='Added from Qualys scan')
-
-
 class DeleteHostIssue(FlaskForm):
     issue_id = StringField('issue_id',
                            validators=[UUID(message='Wrong issue id!')]
