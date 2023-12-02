@@ -64,10 +64,10 @@ class ToolArguments(FlaskForm):
     )
 
     only_confirmed = BooleanField(label='only_confirmed',
-                               description="Only confirmed vulnerabilities",
-                               default=True,
-                               validators=[],
-                               _meta={"display_row": 3, "display_column": 1})
+                                  description="Only confirmed vulnerabilities",
+                                  default=True,
+                                  validators=[],
+                                  _meta={"display_row": 3, "display_column": 1})
 
 
 ########### Request processing
@@ -84,12 +84,13 @@ def beautify_output(xml_str):
     xml_str = xml_str.replace('</a>', '\n')
     return xml_str
 
+
 def process_request(
         current_user: dict,  # current_user['id'] - UUID of current user
         current_project: dict,  # current_project['id'] - UUID of current project
         db: Database,  # object of Database() class /system/db.py
         input_dict: object,  # dict with keys - input field names, and values.
-        global_config: object # dict with settings.ini information
+        global_config: object  # dict with settings.ini information
 ) -> str:  # returns error text or "" (if finished successfully)
     # xml files
     for bin_file_data in input_dict['xml_files']:
