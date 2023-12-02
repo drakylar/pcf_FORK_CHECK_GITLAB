@@ -843,16 +843,6 @@ class ShodanForm(FlaskForm):
     need_network = IntegerField('need_networks', default=0)
 
 
-
-
-class Openvas(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    # csv_files = MultipleFileField('csv_files')
-    hosts_description = StringField('hosts_description', default='Added from OpenVAS scan')
-    hostnames_description = StringField('hostnames_description', default='Added from OpenVAS scan')
-    ports_description = StringField('ports_description', default='Added from OpenVAS scan')
-
-
 class Netsparker(FlaskForm):
     xml_files = MultipleFileField('xml_files')
     only_confirmed = IntegerField('only_confirmed', default=0)
