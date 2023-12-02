@@ -690,15 +690,6 @@ class DeletePort(FlaskForm):
                           )
 
 
-class NiktoForm(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    csv_files = MultipleFileField('csv_files')
-    json_files = MultipleFileField('json_files')
-    hosts_description = StringField('hosts_description', default='Added from Nikto scan')
-    hostnames_description = StringField('hostnames_description', default='Added from Nikto scan')
-    ports_description = StringField('ports_description', default='Added from Nikto scan')
-
-
 class AcunetixForm(FlaskForm):
     files = MultipleFileField('files')
     auto_resolve = IntegerField('auto_resolve', default=0)
