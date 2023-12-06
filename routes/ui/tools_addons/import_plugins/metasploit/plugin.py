@@ -306,6 +306,6 @@ def process_request(
                                                                 )
         except Exception as e:
             logging.error("Error during parsing report: {}".format(e))
-            return "Error during parsing report, check that you upload \"Scan results\" XML file, not \"Reports\" XML."
+            return "Error during parsing XML report!"
 
     return ""
