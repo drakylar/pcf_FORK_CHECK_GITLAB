@@ -1263,12 +1263,6 @@ class DeletePath(FlaskForm):
                           validators=[UUID(message='Wrong UUID!')])
 
 
-class MaxpatrolForm(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    add_empty_host = IntegerField('add_empty_host', default=0)
-    hosts_description = StringField('hosts_description', default='Added from MaxPatrol scan')
-    ports_description = StringField('ports_description', default='Added from MaxPatrol scan')
-
 
 class ExportIssueRules(FlaskForm):
     rule_id = NonValidatingSelectMultipleField(StringField('rule_id',

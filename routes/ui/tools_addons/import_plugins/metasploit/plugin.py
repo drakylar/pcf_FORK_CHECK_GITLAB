@@ -1,7 +1,6 @@
 ######## Imports #########
 import base64
 import ipaddress
-import json
 import logging
 
 from bs4 import BeautifulSoup
