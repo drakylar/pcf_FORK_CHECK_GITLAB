@@ -41,7 +41,7 @@ class ToolArguments(FlaskForm):
     hostnames_description = StringField(
         label='hostnames_description',
         description='Hostnames description',
-        default='Added from Qualys scan',
+        default='Added from Metasploit scan',
         validators=[],
         _meta={"display_row": 1, "display_column": 2}
     )
