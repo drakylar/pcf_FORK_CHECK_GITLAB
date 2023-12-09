@@ -42,7 +42,7 @@ class ToolArguments(FlaskForm):
 
     csv_files = MultipleFileField(
         label='csv_files',
-        description='.csv reports (⚠️better don\'t use .csv - some info may be lost⚠️ - <a href="https://gitlab.com/invuls/pentest-projects/pcf/-/issues/138">more info</a>)',
+        description='.csv reports (⚠️better don\'t use .csv - some info may be lost⚠️ - <a target="_blank" rel="noopener noreferrer" href="https://gitlab.com/invuls/pentest-projects/pcf/-/issues/138">more info</a>)',
         default=None,
         validators=[],
         _meta={"display_row": 2, "display_column": 1, "file_extensions": ".csv"}
