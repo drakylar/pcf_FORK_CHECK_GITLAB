@@ -680,12 +680,6 @@ class DeletePort(FlaskForm):
                           )
 
 
-class AcunetixForm(FlaskForm):
-    files = MultipleFileField('files')
-    auto_resolve = IntegerField('auto_resolve', default=0)
-    host = StringField('host', default='')
-
-
 class MultiplePortHosts(FlaskForm):
     port = StringField('port',
                        validators=[DataRequired(message='Port required!')])
