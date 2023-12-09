@@ -81,7 +81,6 @@ class ToolArguments(FlaskForm):
 
 ########### Request processing
 
-
 def process_request(
         current_user: dict,  # current_user['id'] - UUID of current user
         current_project: dict,  # current_project['id'] - UUID of current project
