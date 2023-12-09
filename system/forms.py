@@ -1320,14 +1320,6 @@ class EditTask(FlaskForm):
     hosts = StringField('hosts', default="[]")
 
 
-class aiodnsbruteForm(FlaskForm):
-    csv_files = MultipleFileField('csv_files')
-    json_files = MultipleFileField('json_files')
-    hosts_description = StringField('hosts_description', default='Added from aiodnsbrute scan')
-    hostnames_description = StringField('hostnames_description', default='Added from aiodnsbrute scan')
-    ignore_ipv6 = IntegerField('ignore_ipv6', default=0)
-
-
 class AdvancedPortScanner(FlaskForm):
     files = MultipleFileField('files')
     add_no_open = IntegerField('add_no_open', default=0)
