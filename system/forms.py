@@ -1203,15 +1203,6 @@ class MultipleAddHosts(FlaskForm):
                                            default=0)
 
 
-class DNSreconForm(FlaskForm):
-    xml_files = MultipleFileField('xml_files')
-    csv_files = MultipleFileField('csv_files')
-    json_files = MultipleFileField('json_files')
-    hosts_description = StringField('hosts_description', default='Added from DNSrecon scan')
-    ports_description = StringField('ports_description', default='Added from DNSrecon scan')
-    ignore_ipv6 = IntegerField('ignore_ipv6', default=0)
-
-
 class NucleiForm(FlaskForm):
     json_files = MultipleFileField('json_files')
     auto_resolve = IntegerField('auto_resolve', default=0)
