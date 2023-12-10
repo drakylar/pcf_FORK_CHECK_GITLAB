@@ -358,10 +358,7 @@ class SetPoCPriority(FlaskForm):
                          validators=[DataRequired(message='POC id required!'),
                                      UUID(message='POC id invalid!')])
     priority = IntegerField('priority',
-                            validators=[DataRequired(message='Priority id required!'),
-                                        AnyOf([0, 1])
-                                        ],
-                            default=1)
+                            validators=[AnyOf([0, 1])])
 
 
 class NewNetwork(FlaskForm):
