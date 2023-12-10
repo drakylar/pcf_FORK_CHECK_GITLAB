@@ -24,20 +24,20 @@ when carrying out various works for testing!</b>
         </tr>
     </thead>
     <tbody>
-        <tr>
+        <tr style="min-width: 300px">
             <td rowspan=1><a href="https://gitlab.com/invuls/pentest-projects/pcf/-/wikis/Installation"><b>📖Installation Guide</b></a></td>
             <td rowspan=6><img src="https://i.ibb.co/x23DXMK/pcf-main-page.jpg"></td>
         </tr>
-        <tr>
+        <tr style="min-width: 300px">
             <td rowspan=1><a href="https://gitlab.com/invuls/pentest-projects/pcf/-/wikis/home"><b>🌐Wiki</b></a></td>
         </tr>
-        <tr>
+        <tr style="min-width: 300px">
             <td rowspan=1><a href="https://gitlab.com/invuls/pentest-projects/pcf/-/releases"><b>🚀Releases</b></a></td>
         </tr>
-        <tr>
+        <tr style="min-width: 300px">
             <td rowspan=1><a href="https://t.me/PentestCollaborationFramework"><b>💬Telegram</b></a></td>
         </tr>
-        <tr>
+        <tr style="min-width: 300px">
             <td rowspan=1>
                 <a href="https://dashboard.heroku.com/new-app?template=https://github.com/drakylar/pcf_FORK_CHECK_GITLAB"><img src="https://www.herokucdn.com/deploy/button.png"></a><br/>
                 <a href="https://aws.amazon.com/marketplace/pp/B08XMGYCHR"><img src="https://i.ibb.co/jbwS6cP/Fotoram-io-1-2.png"></a>
