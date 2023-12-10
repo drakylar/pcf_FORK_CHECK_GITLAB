@@ -494,8 +494,10 @@ def multiple_host_delete(project_id, current_project, current_user):
 @check_project_archived
 @send_log_data
 def new_issue(project_id, current_project, current_user):
+    issues_list = [x['name'] for x in db.select_project_issues(current_project['id'])]
     return render_template('project/issues/new.html',
                            current_project=current_project,
+                           issues_list=issues_list,
                            tab_name='New issue')
 
 
@@ -506,6 +508,9 @@ def new_issue(project_id, current_project, current_user):
 @check_project_archived
 @send_log_data
 def new_issue_form(project_id, current_project, current_user):
+
+    issues_list = [x['name'] for x in db.select_project_issues(current_project['id'])]
+
     form = NewIssue()
     form.validate()
     errors = []
@@ -646,6 +651,7 @@ def new_issue_form(project_id, current_project, current_user):
     return render_template('project/issues/new.html',
                            current_project=current_project,
                            errors=errors,
+                           issues_list=issues_list,
                            tab_name='New issue')
 
 
