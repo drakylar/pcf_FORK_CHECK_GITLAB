@@ -339,6 +339,14 @@ class EditIssueField(FlaskForm):
                                          )
 
 
+class EditPOC(FlaskForm):
+    poc_id = StringField('poc_id', validators=[UUID(message="Invalid UUID!")],
+                         default='')
+    service = StringField('service', validators=[ip_host_port_validator],
+                          default='')
+    comment = StringField('comment', default='')
+
+
 class DeletePOC(FlaskForm):
     poc_id = StringField('poc_id',
                          validators=[DataRequired(message='POC id required!'),
@@ -1246,7 +1254,6 @@ class NewPath(FlaskForm):
 class DeletePath(FlaskForm):
     path_id = StringField('path_id',
                           validators=[UUID(message='Wrong UUID!')])
-
 
 
 class ExportIssueRules(FlaskForm):
