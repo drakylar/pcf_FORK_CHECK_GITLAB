@@ -26,7 +26,7 @@ when carrying out various works for testing!</b>
     <tbody>
         <tr>
             <td rowspan=1><a href="https://gitlab.com/invuls/pentest-projects/pcf/-/wikis/Installation"><b>📖Installation Guide</b></a></td>
-            <td rowspan=6><img src="https://i.ibb.co/CnctfrR/Webp-net-resizeimage.png"></td>
+            <td rowspan=6><img src="https://i.ibb.co/x23DXMK/pcf-main-page.jpg"></td>
         </tr>
         <tr>
             <td rowspan=1><a href="https://gitlab.com/invuls/pentest-projects/pcf/-/wikis/home"><b>🌐Wiki</b></a></td>
