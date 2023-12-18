@@ -584,7 +584,7 @@ class NewNote(FlaskForm):
                            DataRequired(message='Note name required!')])
     host_id = StringField('host_id', default='')
     note_type = StringField('note_type',
-                            validators=[AnyOf(["html", "markdown", "google_drive", "url", "plaintext"])],
+                            validators=[AnyOf(["html", "markdown", "google_drive", "url", "plaintext", "excalidraw"])],
                             default="html")
     url = StringField('url', default='')
 

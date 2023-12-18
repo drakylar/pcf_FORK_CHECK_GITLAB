@@ -2532,6 +2532,12 @@ def new_note_form(project_id, current_project, current_user):
                 note_id = db.insert_new_note(current_project['id'], form.name.data,
                                              current_user['id'], host_id=host_id, note_type=form.note_type.data,
                                              text=form.url.data)
+        elif form.note_type.data == "excalidraw":
+            # check url for excalidraw
+            if urlparse(form.url.data).netloc.lower() == "excalidraw.com":
+                note_id = db.insert_new_note(current_project['id'], form.name.data,
+                                             current_user['id'], host_id=host_id, note_type=form.note_type.data,
+                                             text=form.url.data)
         elif form.note_type.data == "url":
             if urlparse(form.url.data).scheme.lower() in ["http", "https"]:
                 note_id = db.insert_new_note(current_project['id'], form.name.data,

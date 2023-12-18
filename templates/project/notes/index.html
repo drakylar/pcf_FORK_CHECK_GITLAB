@@ -9,7 +9,7 @@
     <script src="/static/js/easymde.min.js"></script>
 {% endif %}
 {% if external_css %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css"/>
     <link href="https://cdn.quilljs.com/2.0.0-dev.4/quill.snow.css" rel="stylesheet">
 {% else %}
     <link href="/static/css/quill.snow.css" rel="stylesheet">
@@ -36,6 +36,7 @@
                             <div class="menu">
                                 <div class="item" data-value="html">Standard HTML</div>
                                 <div class="item" data-value="google_drive">Google Drive Document</div>
+                                <div class="item" data-value="excalidraw">Excalidraw</div>
                                 <div class="item" data-value="markdown">Markdown document</div>
                                 <div class="item" data-value="plaintext">Plaintext document</div>
                                 <div class="item" data-value="url">Link to document</div>
@@ -71,7 +72,7 @@
                         $('#new_note_type')[0].addEventListener(
                             'change',
                             function (obj) {
-                                if (obj.srcElement.value === "html" || obj.srcElement.value === "markdown") {
+                                if (obj.srcElement.value === "html" || obj.srcElement.value === "markdown" || obj.srcElement.value === "plaintext") {
                                     $('#new_note_url')[0].required = false;
                                     $('#new_note_url')[0].value = "";
                                     $('#new_note_url')[0].style.display = "none";
@@ -79,6 +80,10 @@
                                     $('#new_note_url')[0].required = true;
                                     $('#new_note_url')[0].style.display = "block";
                                     $('#new_note_url')[0].placeholder = "https://docs.google.com/document/.../edit";
+                                } else if (obj.srcElement.value === "excalidraw") {
+                                    $('#new_note_url')[0].required = true;
+                                    $('#new_note_url')[0].style.display = "block";
+                                    $('#new_note_url')[0].placeholder = "https://excalidraw.com/#room=.....";
                                 } else if (obj.srcElement.value === "url") {
                                     $('#new_note_url')[0].required = true;
                                     $('#new_note_url')[0].style.display = "block";
@@ -350,6 +355,18 @@
                                     $('#toolbar-container_{{ loop.index }}')[0].parentElement.style.height = "100%";
                                     $("#node_url_button_{{ loop.index }}")[0].style["display"] = "block";
                                     $("#node_url_button_{{ loop.index }}")[0].href = "{% if current_note["type"] == "google_drive" %}{{ current_note["text"] }}{% endif %}";
+                                    editor_array.push(null);
+                                    quill_array.push(null);
+                                } else if (note_type === "excalidraw") {
+                                    $("#editor_{{ loop.index }}")[0].innerHTML = '<iframe src="{% if current_note["type"] == "excalidraw" %}{{ current_note["text"] }}{% endif %}" style="height:calc(100% - 5px);width:100%;"></iframe>';
+                                    $("#editor_{{ loop.index }}")[0].style.height = "100%";
+                                    $("#editor_{{ loop.index }}")[0].style["max-height"] = "100%";
+                                    $('#checkbox-{{loop.index}}')[0].parentElement.style.display = "none";
+                                    $('#node_update_button_{{ loop.index }}')[0].style.display = "none";
+                                    $('#toolbar-container_{{ loop.index }}')[0].style.display = "none";
+                                    $('#toolbar-container_{{ loop.index }}')[0].parentElement.style.height = "100%";
+                                    $("#node_url_button_{{ loop.index }}")[0].style["display"] = "block";
+                                    $("#node_url_button_{{ loop.index }}")[0].href = "{% if current_note["type"] == "excalidraw" %}{{ current_note["text"] }}{% endif %}";
                                     editor_array.push(null);
                                     quill_array.push(null);
                                 } else if (note_type === "url") {
