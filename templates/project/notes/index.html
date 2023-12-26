@@ -433,7 +433,12 @@
 
                                     easymde = new EasyMDE({
                                         element: input,
-                                        sideBySideFullscreen: false
+                                        sideBySideFullscreen: false,
+                                        renderingConfig: {
+                                            markedOptions: {
+                                                sanitize: true
+                                            }
+                                        }
                                     });
 
 
