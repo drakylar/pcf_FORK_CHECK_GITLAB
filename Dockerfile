@@ -13,7 +13,7 @@ ADD . /pcf
 WORKDIR /pcf
 
 # Add dependencies
-RUN pip3 install -r requirements_unix.txt
+RUN pip3 install --no-cache --upgrade -r requirements_unix.txt
 
 # run PCF
 ENTRYPOINT pip3 install -r requirements_unix.txt; if [ ! -e "./configuration/database.sqlite3" ]; then echo 'DELETE_ALL' | python3 new_initiation.py; fi && python3 run.py
