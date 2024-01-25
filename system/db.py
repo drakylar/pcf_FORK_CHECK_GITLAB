@@ -1998,8 +1998,7 @@ class Database:
         issues = self.select_port_issues(port_id)
         for issue in issues:
             services = json.loads(issue['services'])
-            if port_id in services:
-                del services[port_id]
+            del services[port_id]
             self.execute(
                 '''UPDATE Issues SET services=? WHERE id=? ''',
                 (json.dumps(services), issue['id'])
