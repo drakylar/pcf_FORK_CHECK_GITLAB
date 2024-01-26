@@ -7,7 +7,7 @@ def note_type_add(config, db):
     print("More info: https://gitlab.com/invuls/pentest-projects/pcf/-/issues/156")
     print("Fixing Notes table")
     try:
-        db.execute("ALTER TABLE Notes ADD `type` text default 'html';")
+        db.execute("ALTER TABLE Notes ADD type text default 'html';")
         db.conn.commit()
     except sqlite3.OperationalError as e:
         print("Don't need to add a new column!")
