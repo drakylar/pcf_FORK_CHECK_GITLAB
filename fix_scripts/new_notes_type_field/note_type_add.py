@@ -11,5 +11,8 @@ def note_type_add(config, db):
         db.conn.commit()
     except sqlite3.OperationalError as e:
         print("Don't need to add a new column!")
+    except Exception as e:
+        print("Unhandled exception during process of creating a new column - 'type' "
+              "for Notes table. Please, create a bug ticket and attach the exception!")
+        print("Exception:", e)
     print("Fixed Notes table!")
-
