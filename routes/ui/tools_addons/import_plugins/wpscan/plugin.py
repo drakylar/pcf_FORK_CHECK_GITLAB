@@ -236,7 +236,9 @@ def process_request(
                     issue_name = current_issue["title"]
                     issue_fix = "Upgrade main theme {} to version >= {}".format(main_theme_obj["slug"],
                                                                                 current_issue["fixed_in"])
-                    issue_cve = ",".join(current_issue["references"]["cve"])
+                    issue_cve = ''
+                    if "cve" in current_issue["references"] and current_issue["references"]["cve"]:
+                        issue_cve = ",".join(current_issue["references"]["cve"])
                     issue_description = "{}\n\nURLs:\n{}\n\nwpvulndb: {}".format(issue_name,
                                                                                  "\n".join([" - " + x for x in
                                                                                             current_issue[
