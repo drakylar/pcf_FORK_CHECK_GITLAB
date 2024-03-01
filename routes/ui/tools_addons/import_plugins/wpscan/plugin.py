@@ -220,9 +220,9 @@ def process_request(
                 note_output += "<h1>Main theme </h1></br>"
                 note_output += "<b>Name:</b> " + main_theme_obj["slug"] + "</br>"
                 note_output += "<b>Location:</b> " + main_theme_obj["location"] + "</br>"
-                if "readme_url" in main_theme_obj:
+                if "readme_url" in main_theme_obj and main_theme_obj["readme_url"]:
                     note_output += "<b>Readme URL:</b> " + main_theme_obj["readme_url"] + "</br>"
-                if "style_uri" in main_theme_obj:
+                if "style_uri" in main_theme_obj and main_theme_obj["style_uri"]:
                     note_output += "<b>Official URL:</b> " + main_theme_obj["style_uri"] + "</br>"
                 if "version" in main_theme_obj and main_theme_obj["version"]:
                     note_output += "<b>Version:</b> " + main_theme_obj["version"]["number"] + "</br>"
