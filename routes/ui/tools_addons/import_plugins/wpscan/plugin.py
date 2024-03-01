@@ -185,11 +185,10 @@ def process_request(
                     issue_fix = "Upgrade WordPress to version >= " + current_issue["fixed_in"]
                     issue_cve = ",".join(current_issue["references"]["cve"]) if "cve" in current_issue[
                         "references"] else ""
+                    urls = "\n".join([" - " + x for x in current_issue["references"]["url"]]) if "url" in \
+                                                                                                 current_issue["references"] else ""
                     issue_description = "{}\n\nURLs:\n{}\n\nwpvulndb: {}".format(issue_name,
-                                                                                 "\n".join([" - " + x for x in
-                                                                                            current_issue[
-                                                                                                "references"][
-                                                                                                "url"]]),
+                                                                                 urls,
                                                                                  ", ".join(current_issue[
                                                                                                "references"][
                                                                                                "wpvulndb"]))
@@ -239,11 +238,11 @@ def process_request(
                     issue_cve = ''
                     if "cve" in current_issue["references"] and current_issue["references"]["cve"]:
                         issue_cve = ",".join(current_issue["references"]["cve"])
+                    urls = "\n".join([" - " + x for x in current_issue["references"]["url"]]) if "url" in \
+                                                                                                 current_issue[
+                                                                                                     "references"] else ""
                     issue_description = "{}\n\nURLs:\n{}\n\nwpvulndb: {}".format(issue_name,
-                                                                                 "\n".join([" - " + x for x in
-                                                                                            current_issue[
-                                                                                                "references"][
-                                                                                                "url"]]),
+                                                                                 urls,
                                                                                  ", ".join(current_issue[
                                                                                                "references"][
                                                                                                "wpvulndb"]))
@@ -299,16 +298,15 @@ def process_request(
                         issue_name = current_issue["title"]
                         issue_fix = "Upgrade plugin {} to version >= {}".format(plugin_name,
                                                                                 current_issue["fixed_in"])
-                        issue_cve = ",".join(current_issue["references"]["cve"])
-                        issue_description = "{}\n\nURLs:\n{}\n\nwpvulndb: {}".format(issue_name,
-                                                                                     "\n".join(
-                                                                                         [" - " + x for x in
-                                                                                          current_issue[
-                                                                                              "references"][
-                                                                                              "url"]]),
-                                                                                     ", ".join(current_issue[
-                                                                                                   "references"][
-                                                                                                   "wpvulndb"]))
+                        issue_cve = ",".join(current_issue["references"]["cve"]) if "cve" in current_issue[
+                            "references"] else ""
+                        urls = "\n".join([" - " + x for x in current_issue["references"]["url"]]) if "url" in \
+                                                                                                     current_issue[
+                                                                                                         "references"] else ""
+                        issue_description = "{}\n\nURLs:\n{}\n\nwpvulndb: {}".format(issue_name, urls,
+                                                                                     ", ".join(
+                                                                                         current_issue["references"][
+                                                                                             "wpvulndb"]))
                         if "exploitdb" in current_issue:
                             issue_description += "\n\nExploitDB: {}".format(current_issue["exploitdb"])
                         if "youtube" in current_issue:
