@@ -88,15 +88,15 @@ def process_request(
                     issue_is_tcp = int(query.find('port').text.split('/')[1] == 'tcp')
 
                     nvt_obj = query.find('nvt')
-                    issue_name = nvt_obj.find('name').text
+                    issue_name = nvt_obj.find('name').text.strip()
                     issue_type = nvt_obj.find('family').text
                     issue_cvss = float(nvt_obj.find('cvss_base').text)
-                    issue_long_description = nvt_obj.find('tags').text
+                    issue_long_description = nvt_obj.find('tags').text.strip()
 
                     solution_obj = nvt_obj.find('solution')
                     issue_solution = ''
                     if solution_obj.get('type') != 'WillNotFix':
-                        issue_solution = solution_obj.text
+                        issue_solution = solution_obj.text.strip()
 
                     cve_list = []
                     links_list = []

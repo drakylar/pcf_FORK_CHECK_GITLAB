@@ -159,8 +159,23 @@ def process_request(
                     .replace('<code>', '\n') \
                     .replace('</code>', '\n') \
                     .replace('<pre>', '') \
-                    .replace('</pre>', '')
-                recomendations = issue.recommendation.contents[0]
+                    .replace('</pre>', '') \
+                    .replace('<span class="bb-dark">', '') \
+                    .replace('<span class="bb-navy">', '') \
+                    .replace('<div class="bb-coolbox">', '') \
+                    .replace('</div>', '') \
+                    .replace('</span>', '') \
+                    .replace('<ul>', '') \
+                    .replace('</ul>', '') \
+                    .replace('<li>', '') \
+                    .replace('</li>', '')
+
+                while '\n\n' in issue_description:
+                    issue_description = issue_description.replace('\n\n', '\n')
+                while '  ' in issue_description:
+                    issue_description = issue_description.replace('  ', ' ')
+
+                recomendations = issue.recommendation.contents[0].strip()
                 issue_request = issue.technicaldetails.request.contents[0]
                 references_arr = issue.references.findAll("reference")
                 references_str = ''

@@ -144,6 +144,16 @@ def process_request(
                             cvss = float(cvss_tmp2.text)
                         elif cvss_tmp3 and cvss_tmp3.text not in ['-', '']:
                             cvss = float(cvss_tmp3.text)
+                        elif 'severity' in issue_obj.find('vuln').attrs:
+                            sev_acunetix = int(issue_obj.find('vuln').attrs['severity'])
+                            if sev_acunetix == 1:
+                                cvss = 2.0
+                            elif sev_acunetix == 2:
+                                cvss = 5.0
+                            elif sev_acunetix == 3:
+                                cvss = 8.0
+                            elif sev_acunetix >= 4:
+                                cvss = 9.5
 
                         issue_name = issue_obj.find('title').text
                         issue_diagnostic = issue_obj.find('diagnosis').text
@@ -212,6 +222,16 @@ def process_request(
                             cvss = float(cvss_tmp2.text)
                         elif cvss_tmp3 and cvss_tmp3.text not in ['-', '']:
                             cvss = float(cvss_tmp3.text)
+                        elif 'severity' in issue_obj.attrs:
+                            sev_acunetix = int(issue_obj.attrs['severity'])
+                            if sev_acunetix == 1:
+                                cvss = 2.0
+                            elif sev_acunetix == 2:
+                                cvss = 5.0
+                            elif sev_acunetix == 3:
+                                cvss = 8.0
+                            elif sev_acunetix >= 4:
+                                cvss = 9.5
 
                         # try to detect port
                         port = 0
@@ -237,7 +257,7 @@ def process_request(
                                                                     current_project['id'], '', 0, 'custom',
                                                                     issue_solution, '')
 
-        except Exception as e:
+        except OverflowError as e:
             logging.error("Error during parsing report: {}".format(e))
             return "Error during parsing report, check that you upload \"Scan results\" XML file, not \"Reports\" XML."
 
