@@ -145,15 +145,13 @@ def process_request(
                         issue_short_description,
                         issue_long_description)
                     cve_str = ','.join(cve_list)
-                    if links_list:
-                        full_description += '\n\nLinks:\n' + '\n'.join(links_list)
                     services = {
                         port_id: [hostname_id] if hostname_id else ['0']
                     }
                     db.insert_new_issue_no_dublicate(issue_name, full_description, '', issue_cvss,
                                                      current_user['id'],
                                                      services, 'need to recheck', current_project['id'], cve_str,
-                                                     0, 'custom', issue_solution, '')
+                                                     0, 'custom', issue_solution, '', references='\n'.join(links_list))
 
         except Exception as e:
             logging.error("Error during parsing report: {}".format(e))
