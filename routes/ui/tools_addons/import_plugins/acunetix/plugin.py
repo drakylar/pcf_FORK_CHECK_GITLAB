@@ -96,9 +96,13 @@ def process_request(
                     IP(input_dict['host'])
                     host = input_dict['host']
                 elif input_dict['auto_resolve'] == 1:
-                    host = socket.gethostbyname(hostname)
+                    try:
+                        host = socket.gethostbyname(hostname)
+                    except Exception as e:
+                        logging.error("Host {} was not resolved!".format(hostname))
+                        return 'Hostname was not resolved!'
                 else:
-                    return 'ip not resolved!'
+                    return 'ip was not resolved!'
 
             # add host
             host_id = db.select_project_host_by_ip(current_project['id'], host)
@@ -168,14 +172,17 @@ def process_request(
                 cwe = 0
                 if issue.cwe:
                     cwe = int(issue.cwe['id'].replace('CWE-', ''))
-                cvss = float(issue.cvss.score.contents[0])
+                if issue.cvss and issue.cvss.score:
+                    cvss = float(issue.cvss.score.contents[0])
+                elif issue.cvss3 and issue.cvss3.score:
+                    cvss = float(issue.cvss3.score.contents[0])
                 # TODO: check CVE field
 
                 full_info = issue_description
 
                 services = {port_id: ['0']}
                 if hostname_id:
-                    services = {port_id: ['0', hostname_id]}
+                    services = {port_id: [hostname_id]}
 
                 db.insert_new_issue(issue_name,
                                     full_info,
