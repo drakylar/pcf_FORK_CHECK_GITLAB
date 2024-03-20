@@ -148,12 +148,14 @@ def process_request(
                             elif 'severity' in vuln_object.attrs:
                                 sev_acunetix = int(vuln_object.attrs['severity'])
                                 if sev_acunetix == 1:
-                                    cvss = 2.0
+                                    cvss = 0.0
                                 elif sev_acunetix == 2:
-                                    cvss = 5.0
+                                    cvss = 2.0
                                 elif sev_acunetix == 3:
+                                    cvss = 5.0
+                                elif sev_acunetix == 4:
                                     cvss = 8.0
-                                elif sev_acunetix >= 4:
+                                elif sev_acunetix == 5:
                                     cvss = 9.5
 
                             issue_name = vuln_object.find('title').text
@@ -224,12 +226,14 @@ def process_request(
                         elif 'severity' in issue_obj.attrs:
                             sev_acunetix = int(issue_obj.attrs['severity'])
                             if sev_acunetix == 1:
-                                cvss = 2.0
+                                cvss = 0.0
                             elif sev_acunetix == 2:
-                                cvss = 5.0
+                                cvss = 2.0
                             elif sev_acunetix == 3:
+                                cvss = 5.0
+                            elif sev_acunetix == 4:
                                 cvss = 8.0
-                            elif sev_acunetix >= 4:
+                            elif sev_acunetix == 5:
                                 cvss = 9.5
 
                         # try to detect port
