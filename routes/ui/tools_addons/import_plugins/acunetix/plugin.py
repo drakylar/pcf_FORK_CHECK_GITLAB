@@ -50,10 +50,10 @@ class ToolArguments(FlaskForm):
     )
 
     auto_resolve = BooleanField(label='auto_resolve',
-                                  description="or automatic resolve ip from PCF server",
-                                  default=False,
-                                  validators=[],
-                                  _meta={"display_row": 2, "display_column": 2})
+                                description="or automatic resolve ip from PCF server",
+                                default=False,
+                                validators=[],
+                                _meta={"display_row": 2, "display_column": 2})
 
 
 ########### Request processing
@@ -70,6 +70,8 @@ def process_request(
         try:
             scan_result = BeautifulSoup(bin_file_data.decode('charmap'), "html.parser").scangroup.scan
             start_url = scan_result.starturl.contents[0]
+            if not start_url.lower().startswith("http"):
+                start_url = "http://" + start_url
             parsed_url = urllib.parse.urlparse(start_url)
             protocol = parsed_url.scheme
             hostname = parsed_url.hostname
