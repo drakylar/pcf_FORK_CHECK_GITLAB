@@ -3233,7 +3233,7 @@ for module_name in modules:
                 else:
                     input_html = """
                                 <label>{}:</label>
-                                <textarea name="{}" placeholder="{}" {}>{}</textarea>""".format(
+                                <textarea name="{}" placeholder="{}" style="min-width: 305px;" {}>{}</textarea>""".format(
                         field_kwargs["description"],
                         input_name,
                         default_str,
