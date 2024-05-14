@@ -1349,13 +1349,8 @@ def shodan_page_form(project_id, current_project, current_user):
                             summary = str(vulns[cve]['summary']) if 'summary' in vulns[cve] else ''
                             services = {port_id: ["0"]}
 
-                            issue_id = db.insert_new_issue(cve, summary, '',
-                                                           cvss,
-                                                           current_user['id'],
-                                                           services,
-                                                           'need to check',
-                                                           current_project['id'],
-                                                           cve=cve)
+                            issue_id = db.insert_new_issue_no_dublicate("Shodan: " + cve, summary, '', cvss, current_user['id'],
+                                      services, 'need to check', current_project['id'], cve=cve)
 
             except shodan.exception.APIError as e:
                 errors.append(e)
@@ -1491,15 +1486,10 @@ def shodan_page_form(project_id, current_project, current_user):
                                 cvss = float(vulns[cve]['cvss']) if 'cvss' in vulns[cve] and vulns[cve]['cvss'] else 0
                                 summary = str(vulns[cve]['summary']) if 'summary' in vulns[cve] else ''
                                 services = {port_id: ["0"]}
-                                issue_id = db.insert_new_issue("Shodan: "+cve,
-                                                               "",
-                                                               "",
-                                                               cvss,
-                                                               current_user['id'],
-                                                               services,
-                                                               'need to check',
-                                                               current_project['id'],
-                                                               cve=cve)
+                                issue_id = db.insert_new_issue_no_dublicate("Shodan: " + cve, summary, '', cvss,
+                                                                            current_user['id'],
+                                                                            services, 'need to check',
+                                                                            current_project['id'], cve=cve)
                 except shodan.exception.APIError as e:
                     errors.append(e)
                 except ValueError:
@@ -1658,16 +1648,11 @@ def shodan_page_form(project_id, current_project, current_user):
                                             'cvss'] else 0
                                         summary = str(vulns[cve]['summary']) if 'summary' in vulns[cve] else ''
                                         services = {port_id: ["0"]}
+                                        issue_id = db.insert_new_issue_no_dublicate("Shodan: " + cve, summary, '', cvss,
+                                                                                    current_user['id'],
+                                                                                    services, 'need to check',
+                                                                                    current_project['id'], cve=cve)
 
-                                        issue_id = db.insert_new_issue(cve,
-                                                                       summary,
-                                                                       '',
-                                                                       cvss,
-                                                                       current_user['id'],
-                                                                       services,
-                                                                       'need to check',
-                                                                       current_project['id'],
-                                                                       cve=cve)
                             except shodan.exception.APIError as e:
                                 pass  # a lot of errors
                             except ValueError:
