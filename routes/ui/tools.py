@@ -1275,8 +1275,8 @@ def shodan_page_form(project_id, current_project, current_user):
                                                                    current_user['id'],
                                                                    ip_version == 6)
                             else:
-                                network_id = network_id[0]['id']
-                                db.update_network(network_id, current_project['id'], net_ip, net_mask,
+                                #network_id = network_id[0]['id']
+                                db.update_network(network_id[0]['id'], current_project['id'], net_ip, net_mask,
                                                   asn, full_network_description, ip_version == 6,
                                                   network_id[0]['internal_ip'],
                                                   network_id[0]['cmd'], json.loads(network_id[0]['access_from']),
@@ -1416,8 +1416,8 @@ def shodan_page_form(project_id, current_project, current_user):
                                                                            'id'],
                                                                        ip_version == 6)
                                 else:
-                                    network_id = network_id[0]['id']
-                                    db.update_network(network_id, current_project['id'], net_ip, net_mask,
+                                    #network_id = network_id[0]['id']
+                                    db.update_network(network_id[0]['id'], current_project['id'], net_ip, net_mask,
                                                       asn, full_network_description, ip_version == 6,
                                                       network_id[0]['internal_ip'],
                                                       network_id[0]['cmd'], json.loads(network_id[0]['access_from']),
@@ -1572,8 +1572,8 @@ def shodan_page_form(project_id, current_project, current_user):
                                                         'id'],
                                                     ip_version == 6)
                                             else:
-                                                network_id = network_id[0]['id']
-                                                db.update_network(network_id,
+                                                # network_id = network_id[0]['id']
+                                                db.update_network(network_id[0]['id'],
                                                                   current_project['id'],
                                                                   net_ip,
                                                                   net_mask,
