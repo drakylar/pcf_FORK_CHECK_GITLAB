@@ -968,8 +968,8 @@
                       style="display: inline-block;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <button type="submit" style="position: relative;" class="ui button red"><i class="trash icon"></i>Delete</button>
-                    <a href="/share/issue/{{ current_issue['id'] }}/" class="ui button purple"><i
-                            class="share square icon" style="position: relative;"></i>Share</a>
+                    <a href="/share/issue/{{ current_issue['id'] }}/"  style="position: relative;" class="ui button purple"><i
+                            class="share square icon"></i>Share</a>
                 </form>
                 <form action="/new_template_from_issue" method="post" target="_blank" style="display: inline-block;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
