@@ -2953,8 +2953,8 @@ def nuclei_page_form(project_id, current_project, current_user):
                 issue_matcher_name = 'Matched: {}'.format(issue_obj['matcher-name']) if 'matcher-name' in issue_obj else ""
                 issue_cvss = 0.0
 
-                if "severity" in issue_obj:
-                    issue_severity = str(issue_obj["severity"]).lower()
+                if "info" in issue_obj and "severity" in issue_obj["info"]:
+                    issue_severity = str(issue_obj["info"]["severity"]).lower()
 
                 if issue_severity in form.severity.data:
 
