@@ -3004,10 +3004,11 @@ def nuclei_page_form(project_id, current_project, current_user):
                             issue_port = url_obj.port
 
                         # check url path
-                        if issue_obj["matched-at"].startswith(issue_host):
-                            issue_url = issue_obj["matched-at"][len(issue_host):]
+                        if "matched-at" in issue_obj:
+                            if issue_obj["matched-at"].startswith(issue_host):
+                                issue_url = str(issue_obj["matched-at"][len(issue_host):])
                         if not issue_url:
-                            issue_path = '/'
+                            issue_url = '/'
 
                         # ip or hostname
                         if not issue_ip and url_obj.hostname:
