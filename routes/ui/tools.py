@@ -1275,7 +1275,7 @@ def shodan_page_form(project_id, current_project, current_user):
                                                                    current_user['id'],
                                                                    ip_version == 6)
                             else:
-                                #network_id = network_id[0]['id']
+                                # network_id = network_id[0]['id']
                                 db.update_network(network_id[0]['id'], current_project['id'], net_ip, net_mask,
                                                   asn, full_network_description, ip_version == 6,
                                                   network_id[0]['internal_ip'],
@@ -1349,8 +1349,10 @@ def shodan_page_form(project_id, current_project, current_user):
                             summary = str(vulns[cve]['summary']) if 'summary' in vulns[cve] else ''
                             services = {port_id: ["0"]}
 
-                            issue_id = db.insert_new_issue_no_dublicate("Shodan: " + cve, summary, '', cvss, current_user['id'],
-                                      services, 'need to check', current_project['id'], cve=cve)
+                            issue_id = db.insert_new_issue_no_dublicate("Shodan: " + cve, summary, '', cvss,
+                                                                        current_user['id'],
+                                                                        services, 'need to check',
+                                                                        current_project['id'], cve=cve)
 
             except shodan.exception.APIError as e:
                 errors.append(e)
@@ -1411,7 +1413,7 @@ def shodan_page_form(project_id, current_project, current_user):
                                                                            'id'],
                                                                        ip_version == 6)
                                 else:
-                                    #network_id = network_id[0]['id']
+                                    # network_id = network_id[0]['id']
                                     db.update_network(network_id[0]['id'], current_project['id'], net_ip, net_mask,
                                                       asn, full_network_description, ip_version == 6,
                                                       network_id[0]['internal_ip'],
@@ -2940,7 +2942,7 @@ def nuclei_page_form(project_id, current_project, current_user):
                 json_data = json.loads('[{}]'.format(bin_data.replace('\r', '').replace('\n', ',')))
             for issue_obj in json_data:
                 # important fields
-                issue_name = 'Nuclei: {}'.format(issue_obj['info']['name'])
+                issue_name = issue_obj['info']['name']
                 issue_tags = 'Tags: {}'.format(', '.join(issue_obj['info']['tags'])) if issue_obj['info'][
                     'tags'] else ""
                 issue_description = issue_obj['info']['description'] if 'description' in issue_obj['info'] else ''
@@ -2950,7 +2952,8 @@ def nuclei_page_form(project_id, current_project, current_user):
                                                                                                issue_obj['info'][
                                                                                                    'reference'] else ""
                 issue_severity = "info"
-                issue_matcher_name = 'Matched: {}'.format(issue_obj['matcher-name']) if 'matcher-name' in issue_obj else ""
+                issue_matcher_name = 'Matched: {}'.format(
+                    issue_obj['matcher-name']) if 'matcher-name' in issue_obj else ""
                 issue_cvss = 0.0
 
                 if "info" in issue_obj and "severity" in issue_obj["info"]:
@@ -2971,7 +2974,8 @@ def nuclei_page_form(project_id, current_project, current_user):
                     issue_ip = issue_obj["ip"] if "ip" in issue_obj else ""  # 142.250.185.78
                     issue_host = issue_obj["host"] if "host" in issue_obj else ''  # https://google.com
                     issue_url = ''
-                    issue_protocol = issue_obj["protocol"] if "protocol" in issue_obj else ''  # i dont know key "protocol
+                    issue_protocol = issue_obj[
+                        "protocol"] if "protocol" in issue_obj else ''  # i dont know key "protocol
                     issue_port = 0
                     issue_hostname = ''
                     issue_cve = issue_obj["cve"] if "cve" in issue_obj else ''
@@ -3078,29 +3082,34 @@ def nuclei_page_form(project_id, current_project, current_user):
                             if current_hostname:
                                 hostname_id = current_hostname[0]['id']
                             else:
-                                hostname_id = db.insert_hostname(host_id, issue_hostname, form.hostnames_description.data,
+                                hostname_id = db.insert_hostname(host_id, issue_hostname,
+                                                                 form.hostnames_description.data,
                                                                  current_user['id'])
 
                         services = {port_id: [hostname_id]}
 
                     # create description
                     issue_full_description = issue_description + '\n'
+
+                    poc_data = ''
+
                     if issue_matcher_name:
-                        issue_full_description += '\n' + issue_matcher_name
+                        poc_data += '\n' + issue_matcher_name
                     if issue_tags:
-                        issue_full_description += '\n' + issue_tags
+                        poc_data += '\n' + issue_tags
                     if issue_type:
-                        issue_full_description += '\n' + issue_type
+                        poc_data += '\n' + issue_type
                     if issue_curl_cmd:
-                        issue_full_description += '\n' + issue_curl_cmd
+                        poc_data += '\n' + issue_curl_cmd
                     if issue_references:
-                        issue_full_description += '\n' + issue_references
+                        poc_data += '\n' + issue_references
                     if issue_other_fields:
-                        issue_full_description += '\n' + issue_other_fields
+                        poc_data += '\n' + issue_other_fields
 
                     # create issue
 
                     issue_full_description = issue_full_description.strip('\n\r\t ')
+                    poc_data = poc_data.strip('\n\r\t ')
 
                     issue_id = db.insert_new_issue_no_dublicate(issue_name,
                                                                 issue_full_description,
@@ -3112,10 +3121,34 @@ def nuclei_page_form(project_id, current_project, current_user):
                                                                 current_project['id'],
                                                                 issue_cve,
                                                                 issue_cwe,
-                                                                'web' if issue_protocol.startswith('http') else 'custom',
+                                                                'web' if issue_protocol.startswith(
+                                                                    'http') else 'custom',
                                                                 fix='',
                                                                 param=''
                                                                 )
+
+                    if poc_data:
+                        port_id = "0"
+                        hostname_id = "0"
+                        if services:
+                            port_id = list(services)[0]
+                            hostname_id = services[port_id][0]
+
+                        if config['files']['poc_storage'] == "database":
+                            poc_id = db.insert_new_poc(port_id, "Nuclei technical data",
+                                                       "text", "poc.txt", issue_id,
+                                                       current_user['id'], hostname_id, storage="database",
+                                                       data=poc_data.encode("charmap", errors="ignore"))
+                        elif config['files']['poc_storage'] == "filesystem":
+                            poc_id = db.insert_new_poc(port_id, "Nuclei technical data",
+                                                       "text", "poc.txt", issue_id,
+                                                       current_user['id'], hostname_id,
+                                                       storage="filesystem")
+                            file_path = './static/files/poc/{}'.format(poc_id)
+                            file_object = open(file_path, 'wb')
+                            file_object.write(poc_data.encode("charmap", errors="ignore"))
+                            file_object.close()
+
 
     return render_template('project/tools/import/nuclei.html',
                            current_project=current_project,
