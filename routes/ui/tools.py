@@ -2946,11 +2946,9 @@ def nuclei_page_form(project_id, current_project, current_user):
                 issue_tags = 'Tags: {}'.format(', '.join(issue_obj['info']['tags'])) if issue_obj['info'][
                     'tags'] else ""
                 issue_description = issue_obj['info']['description'] if 'description' in issue_obj['info'] else ''
-                issue_references = "Links:\n{}".format(
-                    '\n'.join([' - {}'.format(x) for x in issue_obj['info']['reference']])) if 'reference' in \
-                                                                                               issue_obj['info'] and \
-                                                                                               issue_obj['info'][
-                                                                                                   'reference'] else ""
+                issue_references = '\n'.join([' - {}'.format(x)
+                                              for x in issue_obj['info']['reference']]) \
+                    if 'reference' in issue_obj['info'] and issue_obj['info']['reference'] else ""
                 issue_severity = "info"
                 issue_matcher_name = 'Matched: {}'.format(
                     issue_obj['matcher-name']) if 'matcher-name' in issue_obj else ""
@@ -3101,8 +3099,6 @@ def nuclei_page_form(project_id, current_project, current_user):
                         poc_data += '\n' + issue_type
                     if issue_curl_cmd:
                         poc_data += '\n' + issue_curl_cmd
-                    if issue_references:
-                        poc_data += '\n' + issue_references
                     if issue_other_fields:
                         poc_data += '\n' + issue_other_fields
 
@@ -3124,7 +3120,8 @@ def nuclei_page_form(project_id, current_project, current_user):
                                                                 'web' if issue_protocol.startswith(
                                                                     'http') else 'custom',
                                                                 fix='',
-                                                                param=''
+                                                                param='',
+                                                                references=issue_references
                                                                 )
 
                     if poc_data:
@@ -3148,7 +3145,6 @@ def nuclei_page_form(project_id, current_project, current_user):
                             file_object = open(file_path, 'wb')
                             file_object.write(poc_data.encode("charmap", errors="ignore"))
                             file_object.close()
-
 
     return render_template('project/tools/import/nuclei.html',
                            current_project=current_project,
