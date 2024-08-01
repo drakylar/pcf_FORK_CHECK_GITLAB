@@ -1133,7 +1133,7 @@
                     margin-bottom: 0px;
                 }
             </style>
-            <div class="ui tab" data-tab="poc">
+            <div class="ui tab" data-tab="poc" style="padding-left: 30px">
                 <table id="poc_list" class="ui table" style="width: 100%">
                     <thead>
                     <tr id="table_header">
@@ -1306,7 +1306,7 @@
                 {% endif %}
             </div>
 
-            <div class="ui tab" data-tab="fields">
+            <div class="ui tab" data-tab="fields"  style="padding-left: 30px">
                 {% set fields = json_unpack(current_issue['fields']) %}
                 <script>
                     $(document).ready(function () {
@@ -1614,7 +1614,7 @@
                 </div>
             </div>
 
-            <div class="ui tab" data-tab="scores">
+            <div class="ui tab" data-tab="scores"  style="padding-left: 30px">
                 <div class="ui top attached tabular menu" style="margin-bottom: 10px">
                     <a class="item active" data-tab="cvss">
                         CVSS
