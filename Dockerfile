@@ -1,9 +1,9 @@
-FROM alpine:3.8
+FROM alpine:3.12
 
 # Install python/pip
 ENV PYTHONUNBUFFERED=1
-RUN apk add --update --no-cache git libxml2 libxslt-dev gcc python3-dev musl-dev libffi-dev libmagic
-RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
+RUN apk add --update --no-cache git libxml2 libxslt-dev gcc musl-dev libffi-dev libmagic
+RUN apk add --update --no-cache python3~3.8 python3-dev~3.8 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
 RUN pip3 install --no-cache --upgrade pip setuptools
 
