@@ -43,6 +43,7 @@
 	3.2 ports [port_id,...]
 	3.3 comment
 	3.4 issues [issue_id,...]
+	3.5 os
 
 4. pocs {poc_id}
 	4.1 filename
