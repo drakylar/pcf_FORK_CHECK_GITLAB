@@ -3321,6 +3321,7 @@ def generate_report(project_id, current_project, current_user):
                                 "format_date": lambda unix_time,
                                                       str_format: datetime.datetime.fromtimestamp(
                                     int(unix_time)).strftime(str_format),
+                                "latex_escape": latex_str_escape,
                                 "docx_image": docx_image,
                                 "docx_link": docx_link,
                                 "ips_in_subnets": lambda ip_arr, network_arr: True in [
@@ -3483,6 +3484,7 @@ def generate_report(project_id, current_project, current_user):
                                                         "format_date": lambda unix_time,
                                                                               str_format: datetime.datetime.fromtimestamp(
                                                             int(unix_time)).strftime(str_format),
+                                                        "latex_escape": latex_str_escape,
                                                         "docx_image": docx_image,
                                                         "docx_link": docx_link,
                                                         "ips_in_subnets": lambda ip_arr, network_arr: True in [
@@ -3626,8 +3628,9 @@ def generate_report(project_id, current_project, current_user):
                                                                               str_format: datetime.datetime.fromtimestamp(
                                                             int(unix_time)).strftime(str_format),
                                                         "latex_escape": latex_str_escape,
-                                                        "ip_in_subnet": lambda ip, network: ipaddress.ip_address(
-                                                            ip) in ipaddress.ip_network(network, False),
+                                                        "ips_in_subnet": lambda ip_arr, network_arr: True in [
+                                                    ipaddress.ip_address(ip) in ipaddress.ip_network(network, False) for
+                                                    ip in ip_arr for network in network_arr],
                                                         "group_issues_by": group_issues_by
                                                     }
                                                     )
