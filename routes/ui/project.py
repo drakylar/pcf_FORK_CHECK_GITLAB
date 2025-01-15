@@ -3325,7 +3325,8 @@ def generate_report(project_id, current_project, current_user):
                                 "docx_link": docx_link,
                                 "ips_in_subnets": lambda ip_arr, network_arr: True in [
                                     ipaddress.ip_address(ip) in ipaddress.ip_network(network, False) for ip in ip_arr
-                                    for network in network_arr]
+                                    for network in network_arr],
+                                "group_issues_by": group_issues_by
                             }
                         },
                         jinja_env=SandboxedEnvironment(autoescape=True)
@@ -3487,7 +3488,8 @@ def generate_report(project_id, current_project, current_user):
                                                         "ips_in_subnets": lambda ip_arr, network_arr: True in [
                                                             ipaddress.ip_address(ip) in ipaddress.ip_network(network,
                                                                                                              False) for
-                                                            ip in ip_arr for network in network_arr]
+                                                            ip in ip_arr for network in network_arr],
+                                                        "group_issues_by": group_issues_by
                                                     }
                                                 },
                                                 jinja_env=SandboxedEnvironment(autoescape=True)
