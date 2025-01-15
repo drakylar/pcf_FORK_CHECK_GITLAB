@@ -135,4 +135,5 @@ latex_escape(s: str) -> str # escape string to insert it inside latex template
 docx_image(image_id: poc_uuid, width=None: millimeters, height=None: millimeters) # insert image to docx with resizing
 format_date(unix_time: int, str_format: str) -> str # convert UNIX-time into date string
 ips_in_subnets(ips_arr: list, networks_arr: list) -> bool # If at least 1 ip is at least in 1 network
-docx_link(link_test: str, link_href:str) # Converts link to Richtext (clickable links). You need to use it etc at {{r ... rt}}
+docx_link(link_test: str, link_href: str) # Converts link to Richtext (clickable links). You need to use it etc at {{r ... rt}}
+group_issues_by(issues_list: list, group_field_name: str) -> dict # Returns list of grouped issues by specific field. Usage example:  {{ group_issues_by(issues,"cvss")[5.0]}} - it will return [issue_id1, issue_id2, ...] and each issue_id will be with cvss==5.0
