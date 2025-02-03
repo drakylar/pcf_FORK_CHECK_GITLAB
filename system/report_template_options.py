@@ -21,7 +21,6 @@ def csv_escape(s):
         .replace('\\', '\\\\') \
         .replace('\r\n', '\n') \
         .replace('\r', '\n') \
-        .replace('\n', '\\n') \
         .replace('"', '""')
 
 
@@ -31,15 +30,15 @@ def issue_targets_list(issue_obj, hostnames, ports):
     for port_id in services_dict:
         port_obj = ports[port_id]
         postfix = ''
-        if not port_obj['port']['is_tcp']:
+        if not port_obj['is_tcp']:
             postfix = '/udp'
         ip = services_dict[port_id]['ip']
         if services_dict[port_id]['is_ip']:
-            s = ip + ':' + port_obj['port'] + postfix
+            s = ip + ':' + str(port_obj['port']) + postfix
             result.append(s)
         hostnames_list = services_dict[port_id]['hostnames']
         for hostname_id in hostnames_list:
-            s = hostnames[hostname_id]['hostname'] + ':' + port_obj['port'] + postfix
+            s = hostnames[hostname_id]['hostname'] + ':' + str(port_obj['port']) + postfix
             result.append(s)
 
     result = list(set(result))

@@ -2967,8 +2967,9 @@ def project_reports(project_id, current_project, current_user):
     example_files = {
         "./documentation/report/examples/security_analysis_docx/example.docx": ".docx - example report",
         "./documentation/report/examples/security_analysis_latex/security_analysis_latex.zip": ".tex - example report",
-        "./documentation/report/examples/simple_txt/ip_hostnames_list.txt": ".txt - ip,hostname1,hostname2\\n",
-        "./documentation/report/examples/simple_txt/ip_port_list_csv.txt": ".txt - ip;port;service;comment\\n"
+        "./documentation/report/examples/simple_txt/ip_hostnames_list.txt": ".csv - ip,hostname1,hostname2\\n",
+        "./documentation/report/examples/simple_txt/ip_port_list_csv.txt": ".csv - ip;port;service;comment\\n",
+        "./documentation/report/examples/simple_txt/issues_list_csv.txt": ".csv - Issue name,Status,Description,...\\n"
     }
 
     return render_template('project/reports/index.html',
