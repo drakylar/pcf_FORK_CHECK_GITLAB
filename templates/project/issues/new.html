@@ -295,9 +295,8 @@
                 text_html = shown_html + `<div class="ui item" data-value="item1" id="hostname_row">
                                 <label>Too many results (${count})..</label>
                             </div>`;
-            } else {
-                list_elem.innerHTML += shown_html + text_html;
             }
+            list_elem.innerHTML += shown_html + text_html;
 
             $('#hostname_row').checkbox();
             $('.ui.checkbox').checkbox();
