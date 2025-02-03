@@ -1,5 +1,3 @@
-
-
 def group_issues_by(issues_dict, field_name):
     additional_field = False
     if field_name.startswith("field_"):
@@ -16,3 +14,12 @@ def group_issues_by(issues_dict, field_name):
             result_arr[group_val] = []
         result_arr[group_val].append(issue_id)
     return result_arr
+
+
+def csv_escape(s):
+    return str(s).strip() \
+        .replace('\\', '\\\\') \
+        .replace('\r\n', '\n') \
+        .replace('\r', '\n') \
+        .replace('\n', '\\n') \
+        .replace('"', '""')
