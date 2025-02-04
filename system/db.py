@@ -3094,10 +3094,10 @@ class Database:
         project_hosts = self.select_project_hosts(project_id)
         for host in project_hosts:
             host_obj = {
-                'hostnames': [x['id'] for x in host_to_hostnames[host['id']]],
-                'ports': [x['id'] for x in host_to_ports[host['id']]],
+                'hostnames': [x['id'] for x in host_to_hostnames[host['id']]] if host['id'] in host_to_hostnames else [],
+                'ports': [x['id'] for x in host_to_ports[host['id']]] if host['id'] in host_to_ports else [],
                 'comment': host['comment'],
-                'issues': host_to_issues[host['id']],
+                'issues': host_to_issues[host['id']] if host['id'] in host_to_issues else [],
                 'os': host['os']
             }
             result['hosts'][host['ip']] = host_obj
