@@ -40,17 +40,17 @@ class ToolArguments(FlaskForm):
     ports_description = StringField(label='ports_description',
                                     validators=[],
                                     description="Ports description (if empty)",
-                                    default="Added from MaxPatrol scan",
+                                    default="Added from MaxPatrol VM scan",
                                     _meta={"display_row": 1, "display_column": 2, "file_extensions": ""})
 
     hosts_description = StringField(label='hosts_description',
                                     description="Hosts description (if empty)",
                                     validators=[],
-                                    default="Added from MaxPatrol scan",
+                                    default="Added from MaxPatrol VM scan",
                                     _meta={"display_row": 2, "display_column": 1, "file_extensions": ""})
     hostnames_description = StringField(label='hostnames_description',
                                         validators=[],
-                                        default="Added from MaxPatrol scan",
+                                        default="Added from MaxPatrol VM scan",
                                         description="Hostnames description (if empty)",
                                         _meta={"display_row": 2, "display_column": 2, "file_extensions": ""})
 
