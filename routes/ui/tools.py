@@ -505,7 +505,7 @@ def exporter_page_form(project_id, current_project, current_user):
             if form.issue_name.data:
                 port_ids = db.search_issues_port_ids(current_project['id'],
                                                      form.issue_name.data)
-
+            ports_unique_list = []
             for host in result_hosts:
                 ports = db.select_host_ports(host['id'])
                 hostnames = db.select_ip_hostnames(host['id'])
@@ -517,6 +517,7 @@ def exporter_page_form(project_id, current_project, current_user):
                                     port['id'] in port_ids):
 
                                 if host_export == 'ip&hostname':
+                                    ports_unique_list.append(port['port'])
                                     result += '{}{}{}:{}{}'.format(separator,
                                                                    prefix,
                                                                    host['ip'],
@@ -530,6 +531,7 @@ def exporter_page_form(project_id, current_project, current_user):
                                                                        port['port'],
                                                                        postfix)
                                 elif host_export == 'ip':
+                                    ports_unique_list.append(port['port'])
                                     result += '{}{}{}:{}{}'.format(separator,
                                                                    prefix,
                                                                    host['ip'],
@@ -537,22 +539,22 @@ def exporter_page_form(project_id, current_project, current_user):
                                                                    postfix)
 
                                 elif host_export == 'hostname':
+                                    ports_unique_list.append(port['port'])
                                     for hostname in hostnames:
                                         result += '{}{}{}:{}{}'.format(separator,
                                                                        prefix,
-                                                                       hostname[
-                                                                           'hostname'],
+                                                                       hostname['hostname'],
                                                                        port['port'],
                                                                        postfix)
 
                                 elif host_export == 'ip&hostname_unique':
+                                    ports_unique_list.append(port['port'])
                                     if hostnames:
                                         for hostname in hostnames:
                                             result += '{}{}{}:{}{}'.format(
                                                 separator,
                                                 prefix,
-                                                hostname[
-                                                    'hostname'],
+                                                hostname['hostname'],
                                                 port['port'],
                                                 postfix)
                                     else:
@@ -564,6 +566,10 @@ def exporter_page_form(project_id, current_project, current_user):
                                             postfix)
             if result:
                 result = result[len(separator):]
+                if form.add_ports.data and form.only_ports.data:
+                    ports_unique_list = list(set(ports_unique_list))
+                    ports_unique_list.sort()
+                    result = separator.join(['{}{}{}'.format(prefix, x, postfix) for x in ports_unique_list])
 
     elif form.filetype.data == 'csv':
         response_type = 'text/plain'

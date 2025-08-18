@@ -735,6 +735,7 @@ class ExportHosts(FlaskForm):
                                                   'hostname',
                                                   'ip&hostname_unique'])])
     add_ports = IntegerField('add_ports', default=0)
+    only_ports = IntegerField('only_ports', default=0)
     open_in_browser = IntegerField('open_in_browser', default=0)
     prefix = StringField('prefix', default='')
     postfix = StringField('postfix', default='')
