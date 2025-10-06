@@ -2579,6 +2579,7 @@ class Database:
         for host_obj in hosts_list:
             result_dict[host_obj['id']] = host_obj['ip']
         return result_dict
+
     def select_project_ports_grouped(self, project_id):
         all_ports = self.select_project_ports(project_id)
         # port, is_tcp, service, description, host_id:[]
@@ -3026,7 +3027,8 @@ class Database:
                     else f.read().decode('utf-8', errors='ignore')
                 f.close()
             elif curr_poc['storage'] == 'database':
-                content_b = base64.b64decode(curr_poc['base64']).decode('charmap', errors='ignore') if curr_poc['type'] != 'text' \
+                content_b = base64.b64decode(curr_poc['base64']).decode('charmap', errors='ignore') if curr_poc[
+                                                                                                           'type'] != 'text' \
                     else base64.b64decode(curr_poc['base64']).decode('utf-8', errors='ignore')
             poc_obj['content'] = content_b
             poc_obj['content_base64'] = b64encode(content_b.encode("charmap")) if curr_poc['type'] != 'text' \
@@ -3099,7 +3101,8 @@ class Database:
         project_hosts = self.select_project_hosts(project_id)
         for host in project_hosts:
             host_obj = {
-                'hostnames': [x['id'] for x in host_to_hostnames[host['id']]] if host['id'] in host_to_hostnames else [],
+                'hostnames': [x['id'] for x in host_to_hostnames[host['id']]] if host[
+                                                                                     'id'] in host_to_hostnames else [],
                 'ports': [x['id'] for x in host_to_ports[host['id']]] if host['id'] in host_to_ports else [],
                 'comment': host['comment'],
                 'issues': host_to_issues[host['id']] if host['id'] in host_to_issues else [],
@@ -3302,7 +3305,6 @@ class Database:
             if hostname_obj['host_id'] not in hosts_dict:
                 hosts_dict[hostname_obj['host_id']] = []
             hosts_dict[hostname_obj['host_id']].append(hostname_obj)
-
 
         return hosts_dict
 
@@ -4833,3 +4835,31 @@ class Database:
             self.delete_issue_safe(project_id, issue_id)
 
         return
+
+    def select_ai_config_token_secure(self, config_name, search_id="guess"):
+
+        if config_name not in ["gemini", "chatgpt", "deepseek"]:
+            raise Exception("Unknown AI chat name")
+
+
+        if search_id == self.current_user["id"] or search_id == "guess":
+            result = self.select_configs("0", self.current_user["id"], config_name)
+            if search_id != "guess" and not result:
+                raise Exception("Can't find API token for AI " + config_name)
+            if result:
+                return result[0]["data"]
+
+        user_team_ids = [x['id'] for x in self.select_user_teams(self.current_user["id"])]
+
+        for team_id in user_team_ids:
+            if search_id == team_id:
+                result = self.select_configs(team_id, "0", config_name)
+                if not result:
+                    raise Exception("Can't find API token for AI " + config_name)
+                return result[0]["data"]
+            elif search_id == "guess":
+                result = self.select_configs(team_id, "0", config_name)
+                if result:
+                    return result[0]["data"]
+
+        raise Exception("Can't find API token for AI " + config_name)

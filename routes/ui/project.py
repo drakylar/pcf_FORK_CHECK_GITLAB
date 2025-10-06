@@ -15,6 +15,7 @@ from system.crypto_functions import gen_uuid, md5_hex_str, sha1_hex_str, \
     sha512_crypt_str, sha256_crypt_str, nt_hex_str, lm_hex_str, rabbitmq_md5_str
 from system.security_functions import run_function_timeout, latex_str_escape, sql_to_regexp, extract_to_regexp
 from system.report_template_options import group_issues_by, csv_escape, issue_targets_list
+from system.ai_functions import ai_chat_request
 from os import path, remove, stat, makedirs, walk
 from flask import Response, jsonify
 import magic
@@ -3330,7 +3331,34 @@ def generate_report(project_id, current_project, current_user):
                                     for network in network_arr],
                                 "group_issues_by": group_issues_by,
                                 "csv_escape": csv_escape,
-                                "issue_targets_list": issue_targets_list
+                                "issue_targets_list": issue_targets_list,
+                                "chatgpt_text":
+                                    lambda user_id_or_team_id, message, options={}:
+                                    ai_chat_request(
+                                        "chatgpt",
+                                        message,
+                                        api_key=db.select_ai_config_token_secure("chatgpt",
+                                                                                 user_id_or_team_id),
+                                        options=options
+                                    ),
+                                "gemini_text":
+                                    lambda user_id_or_team_id, message, options={}:
+                                    ai_chat_request(
+                                        "gemini",
+                                        message,
+                                        api_key=db.select_ai_config_token_secure("gemini",
+                                                                                 user_id_or_team_id),
+                                        options=options
+                                    ),
+                                "deepseek_text":
+                                    lambda user_id_or_team_id, message, options={}:
+                                    ai_chat_request(
+                                        "deepseek",
+                                        message,
+                                        api_key=db.select_ai_config_token_secure("deepseek",
+                                                                                 user_id_or_team_id),
+                                        options=options
+                                    )
                             }
                         },
                         jinja_env=SandboxedEnvironment(autoescape=True)
@@ -3496,7 +3524,31 @@ def generate_report(project_id, current_project, current_user):
                                                             ip in ip_arr for network in network_arr],
                                                         "group_issues_by": group_issues_by,
                                                         "csv_escape": csv_escape,
-                                                        "issue_targets_list": issue_targets_list
+                                                        "issue_targets_list": issue_targets_list,
+                                                        "chatgpt_text": lambda user_id_or_team_id, message, options={}:
+                                                        ai_chat_request(
+                                                            "chatgpt",
+                                                            message,
+                                                            api_key=db.select_ai_config_token_secure("chatgpt",
+                                                                                                     user_id_or_team_id),
+                                                            options=options
+                                                        ),
+                                                        "gemini_text": lambda user_id_or_team_id, message, options={}:
+                                                        ai_chat_request(
+                                                            "gemini",
+                                                            message,
+                                                            api_key=db.select_ai_config_token_secure("gemini",
+                                                                                                     user_id_or_team_id),
+                                                            options=options
+                                                        ),
+                                                        "deepseek_text": lambda user_id_or_team_id, message, options={}:
+                                                        ai_chat_request(
+                                                            "deepseek",
+                                                            message,
+                                                            api_key=db.select_ai_config_token_secure("deepseek",
+                                                                                                     user_id_or_team_id),
+                                                            options=options
+                                                        )
                                                     }
                                                 },
                                                 jinja_env=SandboxedEnvironment(autoescape=True)
@@ -3529,7 +3581,31 @@ def generate_report(project_id, current_project, current_user):
                                                     ip in ip_arr for network in network_arr],
                                                 "group_issues_by": group_issues_by,
                                                 "csv_escape": csv_escape,
-                                                "issue_targets_list": issue_targets_list
+                                                "issue_targets_list": issue_targets_list,
+                                                "chatgpt_text": lambda user_id_or_team_id, message, options={}:
+                                                ai_chat_request(
+                                                    "chatgpt",
+                                                    message,
+                                                    api_key=db.select_ai_config_token_secure("chatgpt",
+                                                                                             user_id_or_team_id),
+                                                    options=options
+                                                ),
+                                                "gemini_text": lambda user_id_or_team_id, message, options={}:
+                                                ai_chat_request(
+                                                    "gemini",
+                                                    message,
+                                                    api_key=db.select_ai_config_token_secure("gemini",
+                                                                                             user_id_or_team_id),
+                                                    options=options
+                                                ),
+                                                "deepseek_text": lambda user_id_or_team_id, message, options={}:
+                                                ai_chat_request(
+                                                    "deepseek",
+                                                    message,
+                                                    api_key=db.select_ai_config_token_secure("deepseek",
+                                                                                             user_id_or_team_id),
+                                                    options=options
+                                                )
                                             }
                                         )
                                         f = open(file_path, 'w', encoding='utf-8')
@@ -3641,7 +3717,34 @@ def generate_report(project_id, current_project, current_user):
                                                             ip in ip_arr for network in network_arr],
                                                         "group_issues_by": group_issues_by,
                                                         "csv_escape": csv_escape,
-                                                        "issue_targets_list": issue_targets_list
+                                                        "issue_targets_list": issue_targets_list,
+                                                        "chatgpt_text":
+                                                            lambda user_id_or_team_id, message, options={}:
+                                                            ai_chat_request(
+                                                                "chatgpt",
+                                                                message,
+                                                                api_key=db.select_ai_config_token_secure("chatgpt",
+                                                                                                         user_id_or_team_id),
+                                                                options=options
+                                                            ),
+                                                        "gemini_text":
+                                                            lambda user_id_or_team_id, message, options={}:
+                                                            ai_chat_request(
+                                                                "gemini",
+                                                                message,
+                                                                api_key=db.select_ai_config_token_secure("gemini",
+                                                                                                         user_id_or_team_id),
+                                                                options=options
+                                                            ),
+                                                        "deepseek_text":
+                                                            lambda user_id_or_team_id, message, options={}:
+                                                            ai_chat_request(
+                                                                "deepseek",
+                                                                message,
+                                                                api_key=db.select_ai_config_token_secure("deepseek",
+                                                                                                         user_id_or_team_id),
+                                                                options=options
+                                                            )
                                                     }
                                                     )
                 if rendered_txt:
