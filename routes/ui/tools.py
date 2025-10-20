@@ -512,7 +512,7 @@ def exporter_page_form(project_id, current_project, current_user):
                 for port in ports:
                     if (not form.port.data) or (
                             [port['port'], port['is_tcp']] in ports_array):
-                        if form.service.data == '' or form.service.data == port['service']:
+                        if form.service.data == '' or port['service'] in form.service.data.split(","):
                             if (not form.issue_name.data) or (
                                     port['id'] in port_ids):
 
