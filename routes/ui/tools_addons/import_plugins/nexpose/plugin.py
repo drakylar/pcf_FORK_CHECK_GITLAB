@@ -63,7 +63,9 @@ def process_request(
                 mac_address = ("MAC: " + str(host_obj.attrs["hardware-address"])) \
                     if "hardware-address" in host_obj.attrs and host_obj.attrs["hardware-address"] else ""
 
-                hostnames_arr = [str(x.get_text()).lower() for x in host_obj.find("names").findAll("name")]
+                hostnames_arr = []
+                if host_obj.find("names"):
+                    hostnames_arr = [str(x.get_text()).lower() for x in host_obj.find("names").findAll("name")]
 
                 fingerprints = host_obj.find("fingerprints").findAll("os")
 
