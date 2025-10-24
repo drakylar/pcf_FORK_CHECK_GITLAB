@@ -67,7 +67,9 @@ def process_request(
                 if host_obj.find("names"):
                     hostnames_arr = [str(x.get_text()).lower() for x in host_obj.find("names").findAll("name")]
 
-                fingerprints = host_obj.find("fingerprints").findAll("os")
+                fingerprints = ""
+                if host_obj.find("fingerprints"):
+                    fingerprints = host_obj.find("fingerprints").findAll("os")
 
                 host_os = ""
 
@@ -104,7 +106,9 @@ def process_request(
                                                              hostname, "Nexpose scan",
                                                              current_user['id'])
                 # add ports
-                ports_list = host_obj.find("endpoints").findAll("endpoint")
+                ports_list = []
+                if host_obj.find("endpoints"):
+                    ports_list = host_obj.find("endpoints").findAll("endpoint")
 
                 for port_obj in ports_list:
                     if port_obj.attrs["status"] != "closed":
