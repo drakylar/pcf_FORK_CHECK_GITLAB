@@ -79,6 +79,7 @@ def process_request(
                     host_os += " arch=" + str(fingerprints[0].attrs["arch"]).strip() if "arch" in fingerprints[0].attrs else ""
                     if "device-class" in fingerprints[0].attrs and fingerprints[0].attrs["device-class"]:
                         host_os = "device_class= " + fingerprints[0].attrs["device-class"].strip() + " " + host_os
+                    host_os = host_os.strip("\r\n \t")
 
                 # add host
                 current_host = db.select_project_host_by_ip(current_project['id'], ip)
