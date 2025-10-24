@@ -72,11 +72,11 @@ def process_request(
                 host_os = ""
 
                 if len(fingerprints) > 0:
-                    host_os = "family=" + str(fingerprints[0].attrs["family"]).strip()
-                    host_os += " vendor=" + str(fingerprints[0].attrs["vendor"]).strip()
-                    host_os += " product=" + str(fingerprints[0].attrs["product"]).strip()
-                    host_os += " version=" + str(fingerprints[0].attrs["version"]).strip()
-                    host_os += " arch=" + str(fingerprints[0].attrs["arch"]).strip()
+                    host_os = "family=" + str(fingerprints[0].attrs["family"]).strip() if "family" in fingerprints[0].attrs else ""
+                    host_os += " vendor=" + str(fingerprints[0].attrs["vendor"]).strip() if "vendor" in fingerprints[0].attrs else ""
+                    host_os += " product=" + str(fingerprints[0].attrs["product"]).strip() if "product" in fingerprints[0].attrs else ""
+                    host_os += " version=" + str(fingerprints[0].attrs["version"]).strip() if "version" in fingerprints[0].attrs else ""
+                    host_os += " arch=" + str(fingerprints[0].attrs["arch"]).strip() if "arch" in fingerprints[0].attrs else ""
                     if "device-class" in fingerprints[0].attrs and fingerprints[0].attrs["device-class"]:
                         host_os = "device_class= " + fingerprints[0].attrs["device-class"].strip() + " " + host_os
 
