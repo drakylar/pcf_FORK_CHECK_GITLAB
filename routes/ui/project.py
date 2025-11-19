@@ -3756,7 +3756,7 @@ def generate_report(project_id, current_project, current_user):
 
                     file_data = b''
                     if config["files"]["files_storage"] == 'database':
-                        file_data = rendered_txt.encode('charmap')
+                        file_data = rendered_txt.encode('utf-8', 'ignore')
                         remove(file_path)
 
                     db.insert_new_file(file_uuid, current_project['id'],
