@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache git libxml2 libxslt-dev gcc musl-dev libffi-dev libmagic
 RUN apk add --update --no-cache python3~3.9 python3-dev~3.9 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
-RUN pip3 install --no-cache --upgrade pip setuptools
+RUN pip3 install --no-cache --upgrade pip "setuptools<82"
 
 # Preparations for PCF
 RUN mkdir /pcf
