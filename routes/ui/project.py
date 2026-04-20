@@ -2175,9 +2175,11 @@ def project_add_credentials_multiple_form(project_id, current_project, current_u
         if form.cleartext_num.data > 0:
             cleartext = line[form.cleartext_num.data - 1]
         if form.source_num.data > 0:
-            login = line[form.source_num.data - 1]
+            source = line[form.source_num.data - 1]
         if form.host_num.data > 0:
             host = line[form.host_num.data - 1]
+        if form.comment_num.data > 0:
+            comment = line[form.comment_num.data - 1]
 
         host_id = None
         port_id = None
